@@ -1,0 +1,21 @@
+# Ramoira Documentation
+
+Ramoira is the canonical schema layer for brand identity 
+in the agent web.
+
+## Key documents
+
+- [What is a brand schema](concepts/what-is-a-brand-schema.md)
+- [CLI reference](reference/cli.md)
+- [Schema fields](reference/schema-fields.md)
+- [Cursor integration](integrations/cursor.md)
+- [Claude Code integration](integrations/claude-code.md)
+- [First schema guide](guides/first-schema.md)
+
+## Schema spec
+
+github.com/ramoira/schema-spec/SPEC.md
+
+## Example schema
+
+github.com/ramoira/brand-schema-spec/examples/little-rituals/
