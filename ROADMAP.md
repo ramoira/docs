@@ -11,7 +11,7 @@
 ## Progress
 
 | Task | Status |
-|:---|:---|
+| :--- | :--- |
 | 2.1 Rewrite schema-fields.md | ⬜ |
 | 2.2 Rewrite tiers.md | ⬜ |
 | 2.3 Rewrite what-is-a-brand-schema.md | ⬜ |
@@ -62,7 +62,8 @@ Expand the current 14-line stub:
 **File:** `concepts/what-is-a-brand-schema.md`
 
 Currently describes v1.0. Rewrite to describe v2.0.0:
-- Five components and why each exists (Kapferer for identity, Barthes/Saussure for narrative, etc.)
+
+- Five components and what problem each solves
 - Component architecture — what `_component` and `_version` mean
 - The difference between full schema and summary
 
