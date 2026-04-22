@@ -5,7 +5,7 @@ A **brand schema** is a structured, versioned definition of a brand that both hu
 Instead of re-briefing an LLM every session, the schema becomes the canonical context layer for:
 
 - brand voice (what to do and what to avoid)
-- narrative meaning (myth, semiotics, pillars)
+- narrative meaning (brand story, meaning layers, pillars)
 - commercial guardrails (pricing/claims/offers/social proof)
 - governance (severity, conflict resolution, compliance routing)
 

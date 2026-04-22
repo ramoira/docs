@@ -11,8 +11,7 @@ Canonical source docs:
 - `POST /api/create-brand/schema`
   - Synthesizes a draft schema from:
     - brand profile
-    - archetype seed
-    - divergence interview answers
+    - interview answers
 
 ## Governance endpoints (example)
 
