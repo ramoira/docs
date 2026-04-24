@@ -1,38 +1,68 @@
 # Using Ramoira with Cursor
 
+Cursor reads files in your project directory. Add `brand.schema.json` to your project and reference it in your system prompt or rules file — Cursor will apply your brand schema automatically.
+
+---
+
 ## Setup
 
-1. Install Ramoira CLI
-   npm install -g ramoira
+**1. Generate a schema**
 
-2. Generate a schema in your project
-   ramoira init
+```sh
+npx ramoira init
+```
 
-3. Add Ramoira MCP server to Cursor settings
-   Settings → MCP → Add server
-   URL: ramoira.com/mcp/public
+This creates `brand.schema.json` in your current directory.
 
-4. Cursor now reads ramoira.config.json automatically
-   Brand context available in every session
+**2. Add a brand rule to `.cursorrules`**
 
-## How it works
+Create or edit `.cursorrules` in your project root:
 
-Cursor reads ramoira.config.json in your project root.
-When you ask Cursor to write copy or content, it fetches
-your brand schema and uses it as context automatically.
+```
+## Brand context
 
-No system prompt needed.
-No re-prompting between sessions.
-Brand context persists across the project.
+This project uses a Ramoira brand schema at brand.schema.json.
 
-## Example session
+Before generating any copy, marketing content, or user-facing text:
+1. Read brand.schema.json
+2. Apply identity.summary.neverDo as absolute constraints
+3. Match voice.approvedTones; avoid voice.forbiddenTones
+4. Study voice.examples — especially the rejected ones
+5. Apply voice.base.structuralRules to every sentence
+6. Check output against governance.preflight before returning
+```
 
-You: Write three subject lines for our next email
-Cursor: [fetches brand schema automatically]
-Output is brand-consistent without any manual brief.
+**3. (Optional) Publish for remote access**
 
-## Upgrading to check_consistency()
+```sh
+export RAMOIRA_TOKEN=your_token
+npx ramoira publish
+```
 
-Available on Studio tier.
-Cursor can call check_consistency() on generated copy
-before returning it to you.
+Published summary URL: `https://ramoira.com/brands/[slug]/schema.summary.json`
+
+---
+
+## How agents should load the schema
+
+For most tasks, Cursor reads `brand.schema.json` directly from the project.
+
+Priority fields for generation:
+
+1. `identity.summary` — one-line brief, three adjectives, never-do list
+2. `voice.approvedTones` and `voice.forbiddenTones`
+3. `voice.examples` — the rejected examples define what this brand will never sound like
+4. `voice.base.structuralRules` — prose-level constraints
+5. `governance.severity.absolute.constraints` — hard stops
+
+---
+
+## Remote schema access
+
+For agents outside your project directory, the published summary is publicly accessible:
+
+```
+https://ramoira.com/brands/[slug]/schema.summary.json
+```
+
+This URL can be added to any agent context that accepts external URLs.

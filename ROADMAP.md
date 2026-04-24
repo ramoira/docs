@@ -3,8 +3,7 @@
 > Goal: every user-facing doc reflects v2.0.0 field names and structure. No v1.0 field names after this phase.
 > Cross-repo context: [cli/ROADMAP.md](../cli/ROADMAP.md)
 
-**Last updated:** 2026-04-22
-**Blocked on:** brand-schema-spec Phase 1 examples (1.5–1.8)
+**Last updated:** 2026-04-24
 
 ---
 
@@ -12,12 +11,12 @@
 
 | Task | Status |
 | :--- | :--- |
-| 2.1 Rewrite schema-fields.md | ⬜ |
-| 2.2 Rewrite tiers.md | ⬜ |
-| 2.3 Rewrite what-is-a-brand-schema.md | ⬜ |
-| 2.4 Rewrite api.md | ⬜ |
-| 2.5 Expand publishing.md | ⬜ |
-| 2.6 Update integration docs | ⬜ |
+| 2.1 Rewrite schema-fields.md | ✅ Done |
+| 2.2 Rewrite tiers.md | ✅ Done |
+| 2.3 Rewrite what-is-a-brand-schema.md | ✅ Done |
+| 2.4 Rewrite api.md | ✅ Done |
+| 2.5 Expand publishing.md | ✅ Done |
+| 2.6 Update integration docs | ✅ Done |
 
 ---
 
