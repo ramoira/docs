@@ -67,7 +67,7 @@ Every component carries `_component` (constant string) and `_version` (semver st
 "refuse_to_generate" | "escalate_to_human" | "use_brand_default" | "use_minimal_safe"
 ```
 
-### OutputSurface (17 values)
+### OutputSurface
 
 ```
 search_result_page   paid_landing_page    product_detail_page
@@ -78,7 +78,7 @@ audio_script         press_release        customer_service
 packaging_copy       out_of_home
 ```
 
-### UserIntent (8 values)
+### UserIntent
 
 ```
 high_intent_buyer    early_research       brand_discovery
@@ -86,7 +86,7 @@ competitor_comparison   post_purchase     service_enquiry
 press_media          investor
 ```
 
-### RelationshipMode (8 values)
+### RelationshipMode
 
 How the brand shows up for people — expressed as the brand's own posture statement:
 
@@ -101,7 +101,7 @@ How the brand shows up for people — expressed as the brand's own posture state
 "The category is broken. We are what replaces it."
 ```
 
-### PricingStyle (5 values)
+### PricingStyle
 
 Encodes the brand market tier:
 
