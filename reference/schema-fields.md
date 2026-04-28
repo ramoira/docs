@@ -88,12 +88,17 @@ press_media          investor
 
 ### RelationshipMode (8 values)
 
-How the brand relates to the customer:
+How the brand shows up for people — expressed as the brand's own posture statement:
 
 ```
-peer                 kind_friend          coach
-mentor               servant_to_exceptional  fellow_activist
-entertainer          challenger
+"We're like you. We just happen to know a bit more about this one thing."
+"Things can be better. Here is a small thing that helps."
+"We believe in what you can do before you do."
+"We know more. Here is the proof."
+"Built to outlast everything. Excellence as philosophy, not strategy."
+"Business as a force for change. Profit is the fuel, not the point."
+"Limits are the starting point. Mediocrity is the only enemy."
+"The category is broken. We are what replaces it."
 ```
 
 ### PricingStyle (5 values)
@@ -181,7 +186,7 @@ Summary meta additionally includes `schemaType: "summary"`, `canonicalURL`, `cer
 
 | Field | Required | Type |
 |:---|:---:|:---|
-| `mode` | ✓ | RelationshipMode |
+| `mode` | ✓ | `RelationshipMode` (archetype posture statement) |
 | `formality` | — | Score |
 | `warmth` | — | Score |
 | `pronoun` | — | `"we" | "I" | "brand_name_only"` |
