@@ -1,6 +1,6 @@
 # Ramoira Documentation
 
-Ramoira is the canonical schema layer for brand identity 
+Ramoira publishes an open schema format for brand identity
 in the agent web.
 
 ## Key documents
@@ -14,7 +14,7 @@ in the agent web.
 
 ## Schema spec
 
-github.com/ramoira/schema-spec/SPEC.md
+github.com/ramoira/brand-schema-spec/blob/main/SPEC.md
 
 ## Example schema
 

@@ -1,25 +1,27 @@
 # Tiers
 
-Ramoira has three tiers. They differ in what is stored, what is public, and what agents can access.
+Drafting, validating, publishing and sharing a brand schema are free. No tier makes a schema more trustworthy, and Ramoira does not certify schemas or content.
+
+What will distinguish one schema from another is whether the brand has **ratified** it and whether content is **checked** against it. Neither is available yet. Until a brand ratifies a schema, it is a **candidate**, whether it is local or published.
 
 ---
 
-## Three-tier model
+## Local and published
 
-| | Local | Published | Studio |
-|:---|:---|:---|:---|
-| **Account required** | No | Yes (free) | Yes (paid) |
-| **Schema stored by Ramoira** | Nothing | Summary only | Full (private) |
-| **Public URL** | — | ✓ draft | ✓ certified |
-| **`workflowState`** | `draft` | `published` | `published` + `certified: true` |
-| **`ramoira init`** | ✓ | ✓ | ✓ |
-| **`ramoira validate`** | ✓ | ✓ | ✓ |
-| **`ramoira publish`** | — | ✓ | ✓ |
-| **Confidence score** | — | — | ✓ |
+| | Local | Published |
+|:---|:---|:---|
+| **Account required** | No | Yes (free) |
+| **Public URL** | — | ✓ candidate (unratified) |
+| **`workflowState`** | `draft` | `published` |
+| **`ramoira init`** | ✓ | ✓ |
+| **`ramoira validate`** | ✓ | ✓ |
+| **`ramoira publish`** | — | ✓ |
+
+The account exists so that a brand's slug belongs to whoever owns it. It is not a pricing tier.
 
 ---
 
-## What each tier provides to agents
+## What each option provides to agents
 
 ### Local
 
@@ -34,13 +36,13 @@ https://ramoira.com/brands/[slug]/schema.summary.json
 https://ramoira.com/brands/[slug]/status
 ```
 
-Remote agents, LLM crawlers, and collaborators can fetch this from anywhere. The full schema is never stored publicly — only the summary.
+Remote agents, LLM crawlers, and collaborators can fetch this from anywhere. The full schema is never served publicly — only the summary.
 
-### Studio
+Publishing does not ratify the schema. A published summary is still a candidate.
 
-Studio submits a published schema for certification. The platform runs archetype alignment analysis and assigns a `confidence` score (0–1). Above the threshold, `certified: true` is set in the summary meta.
+### `certified` and `confidence` (deprecated)
 
-Certified schemas carry higher weight in agent pipelines that check the `certified` flag before using the schema as context.
+Older summaries may carry `meta.certified` and `meta.confidence`. Both are deprecated and will be removed in spec 3.0.0. Neither says anything about the schema's quality, whether the brand ratified it, or whether content conforms to it. Agent pipelines should not read either field.
 
 ---
 
@@ -54,7 +56,8 @@ The public summary is defined precisely in `brand-schema-spec/SPEC.summary.schem
 |:---|:---|
 | `meta.brandId`, `meta.brandName`, `meta.schemaVersion` | Always present |
 | `meta.schemaType: "summary"` | Constant |
-| `meta.canonicalURL`, `meta.certified`, `meta.confidence` | Set by the platform on publish |
+| `meta.canonicalURL` | Set by Ramoira on publish |
+| `meta.certified`, `meta.confidence` | Deprecated; removed in 3.0.0. Do not rely on them. |
 | `identity.summary` | `oneLineBrief`, `threeAdjectives` (exactly 3), `neverDo` (min 1) |
 | `identity.prism.relationship` | `mode`, `formality`, `warmth` |
 | `narrative.semiotic.denotative.categoryDescriptor` | Only this field from denotative |
@@ -98,8 +101,9 @@ Ramoira does not use a separate market tier field. Commercial positioning (luxur
 draft → published
 ```
 
-- `draft` — created locally by `ramoira init`. Not on the platform until `ramoira publish` is called.
+- `draft` — created locally by `ramoira init`. Not on ramoira.com until `ramoira publish` is called.
 - `published` — summary is public at the canonical URL. `workflowState: "published"`.
-- `certified` — Studio only. `workflowState: "published"` + `certified: true` + `confidence > threshold`.
+
+There is no `certified` state. Ratification is not a lifecycle state either: it is a separate act by the brand, and spec 3.0.0 records it separately.
 
 Previous versions are not deleted. `ramoira status` shows the current published version and its state.

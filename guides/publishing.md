@@ -35,11 +35,11 @@ Get a token at [ramoira.com/tokens](https://ramoira.com/tokens).
 
 ## What gets published (the summary)
 
-Only the summary schema is published publicly. The full schema — including commercial rules, governance constraints, and all operational detail — is never stored or served publicly.
+Only the summary schema is published publicly. The full schema — including commercial rules, governance constraints, and all operational detail — is stored privately by Ramoira and never served publicly.
 
 The summary is defined precisely by `brand-schema-spec/SPEC.summary.schema.json`. Exactly these fields are included:
 
-**meta:** `brandId`, `brandName`, `schemaVersion`, `schemaType: "summary"`, `canonicalURL`, `certified`, `confidence`
+**meta:** `brandId`, `brandName`, `schemaVersion`, `schemaType: "summary"`, `canonicalURL` (older summaries may also carry the deprecated `certified` and `confidence`; do not rely on them)
 
 **identity:** `summary` (oneLineBrief, threeAdjectives, neverDo) + `prism.relationship` (mode, formality, warmth)
 
@@ -49,9 +49,9 @@ The summary is defined precisely by `brand-schema-spec/SPEC.summary.schema.json`
 
 ---
 
-## What stays local
+## What stays private
 
-These fields exist only in your local `brand.schema.json` and are never sent to or stored by Ramoira:
+These fields are not in the public summary. `ramoira publish` sends the full schema, so Ramoira stores them privately, but it never serves them publicly:
 
 - `identity.distinctiveAssets` — colors, sonic assets, full typographic voice
 - `narrative.semiotic.layerHierarchy`, `forbiddenMeanings`, `minimumConnotativeTest`
@@ -81,12 +81,10 @@ ramoira status
 
 ## Re-publishing
 
-Run `ramoira publish` again after editing `brand.schema.json`. Each publish creates a new version. Previous versions are retained in the platform version history but the canonical URL always serves the latest published version.
+Run `ramoira publish` again after editing `brand.schema.json`. Each publish creates a new version. Previous versions are retained in Ramoira's version history but the canonical URL always serves the latest published version.
 
 ---
 
-## Studio certification
+## Publishing is not ratification
 
-Studio tier submits a published schema for certification analysis. The platform assigns a `confidence` score (0–1) based on archetype alignment. Above the threshold, `certified: true` is set in the published summary meta.
-
-Certification is available for Studio tier accounts.
+A published schema is still a **candidate**. Publishing makes the summary public; it does not mean the brand has ratified the schema, and it does not certify anything. Ramoira does not certify schemas or content.

@@ -166,7 +166,7 @@ A scoped generation instruction. `context` names the situation; `instruction` is
 | `previousVersion` | — | string | Previous semver |
 | `changelog` | — | string[] | Change notes |
 
-Summary meta additionally includes `schemaType: "summary"`, `canonicalURL`, `certified` (boolean), `confidence` (0–1).
+Summary meta additionally includes `schemaType: "summary"` and `canonicalURL`. Older summaries may carry `certified` and `confidence`; both are deprecated, removed in spec 3.0.0, and carry no meaning.
 
 ---
 

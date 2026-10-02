@@ -2,6 +2,8 @@
 
 Claude Code reads `CLAUDE.md` at the start of every session. Add a schema loading instruction there and Claude Code will apply your brand schema automatically — no re-prompting between sessions.
 
+> **A generated schema is a candidate.** What `ramoira init` produces is a draft until the brand reviews and ratifies it. Content your tools produce with it is not "certified" or "approved" by having used it.
+
 ---
 
 ## Setup

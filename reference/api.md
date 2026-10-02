@@ -27,9 +27,7 @@ A valid `SPEC.summary.schema.json` document. See [schema-fields.md](schema-field
     "brandName": "Little Rituals",
     "schemaVersion": "2.0.0",
     "schemaType": "summary",
-    "canonicalURL": "https://ramoira.com/brands/little-rituals/schema.summary.json",
-    "certified": false,
-    "confidence": 0
+    "canonicalURL": "https://ramoira.com/brands/little-rituals/schema.summary.json"
   },
   "identity": { ... },
   "narrative": { ... },
@@ -58,8 +56,6 @@ GET https://ramoira.com/brands/little-rituals/status
 ```json
 {
   "workflowState": "published",
-  "certified": false,
-  "confidence": 0,
   "canonicalUrl": "https://ramoira.com/brands/little-rituals/schema.summary.json"
 }
 ```
@@ -67,9 +63,9 @@ GET https://ramoira.com/brands/little-rituals/status
 | Field | Type | Notes |
 |:---|:---|:---|
 | `workflowState` | string | `"draft"` \| `"published"` |
-| `certified` | boolean | `true` only for Studio tier |
-| `confidence` | number | 0–1, set by certification analysis |
 | `canonicalUrl` | string \| null | Null if not yet published |
+
+`published` means the summary is public. It does not mean the brand has ratified the schema, and this endpoint reports no score. Older responses may include `certified` and `confidence`: both are deprecated and carry no meaning, so ignore them.
 
 **Errors**
 
@@ -109,9 +105,7 @@ The full schema must pass local validation (`SPEC.schema.json`) before sending. 
 {
   "versionId": "ver_abc123",
   "workflowState": "published",
-  "canonicalUrl": "https://ramoira.com/brands/little-rituals/schema.summary.json",
-  "certified": false,
-  "confidence": 0
+  "canonicalUrl": "https://ramoira.com/brands/little-rituals/schema.summary.json"
 }
 ```
 

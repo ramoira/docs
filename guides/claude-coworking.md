@@ -1,6 +1,8 @@
 # Ramoira + Claude: Coworking Guide for Content Generation
 
-This guide shows you how to use your Ramoira brand schema as a persistent context layer for Claude (either Claude Desktop or Claude Code), allowing you to generate perfectly on-brand content without writing massive "you are a brand copywriter" prompts.
+This guide shows you how to use your Ramoira brand schema as a persistent context layer for Claude (either Claude Desktop or Claude Code), so you can generate content against your brand's rules without writing massive "you are a brand copywriter" prompts.
+
+> **A generated schema is a candidate.** What `ramoira init` produces is a draft until the brand reviews and ratifies it. Content Claude produces with it is not "certified" or "approved" by having used it, and Claude's audit of its own or your drafts (Prompt 4) is a self-check, not an independent check.
 
 ## Phase 1: Capture the Brand
 
@@ -66,4 +68,4 @@ Here are a few battle-tested prompts to get you started. Because Claude now has 
 > "Here is a draft of an email campaign we wrote: 
 > [Paste draft here]
 >
-> Task: Audit this draft against our `brand.schema.json`. Identify any sentences or phrases that violate our defined voice, tone, or archetype. Suggest specific rewrites for those sections to make them fully compliant with our brand schema."
+> Task: Audit this draft against our `brand.schema.json`. Identify any sentences or phrases that violate our defined voice, tone, or archetype. Suggest specific rewrites for those sections."

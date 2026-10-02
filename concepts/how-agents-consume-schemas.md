@@ -7,35 +7,17 @@ Instead:
 1. Resolve the user’s target **surface** (where the output will appear).
 2. Optionally resolve the user’s **intent** (buying, researching, service, etc.).
 3. Load only the schema sections needed for that surface+intent.
-4. Run a **preflight** check on generated output.
+4. Check the generated output against the schema's hard rules before using it.
 
 ## Surface + intent
 
-In the platform canon:
+The valid values are defined in the spec ([brand-schema-spec](https://github.com/ramoira/brand-schema-spec), `SPEC.md`, "Shared primitive types"):
 
-- Surface enum: `platform/lib/brand-schema/types.ts` (`OutputSurface`)
-- Intent enum: `platform/lib/brand-schema/types.ts` (`UserIntent`)
+- Surface: `OutputSurface` (17 values)
+- Intent: `UserIntent` (8 values)
 
-## Surface manifest
+## Checking your own output
 
-The surface manifest maps a surface to exactly which schema sections should be loaded:
+A fast check catches the highest-signal failures: zero-tolerance terms (`governance.compliance.zeroToleranceTerms`), forbidden words, and forbidden commercial language.
 
-- `platform/lib/brand-schema/surfaces/manifest.ts`
-
-## Platform helper
-
-- `platform/lib/brand-schema/index.ts` exports `getSchemaForSurface(brandId, surface, intent?)`.
-
-This returns:
-
-- a trimmed schema object (only required/optional sections)
-- preflight questions
-- fallback behavior
-
-## Preflight
-
-After generating content, run a preflight policy check:
-
-- `platform/lib/brand-schema/index.ts` exports `preflight(schema, content)`.
-
-Preflight is a fast, high-signal check (e.g. zero-tolerance terms, forbidden commercial language).
+A check you run on your own output is a self-check. It is useful tooling, but it is not an independent check and not certification. A schema the brand has not ratified is a candidate, and output is not "certified" by having been checked against it.
