@@ -1,3 +1,5 @@
+> **SUPERSEDED — 2026-10-02.** This roadmap describes the pre-v3 plan (April 2026) and is kept for history only. Its premises — platform v2.0.0 as ground truth, Studio certification, `certified`/`confidence`, the v2 tier model — no longer apply. Ramoira is moving to Brand Schema Spec 3.0.0, and a new roadmap will replace this one. Do not take tasks, priorities or "ground truth" from this file.
+
 # docs — Roadmap
 
 > Goal: every user-facing doc reflects v2.0.0 field names and structure. No v1.0 field names after this phase.
