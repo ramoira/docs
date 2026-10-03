@@ -80,6 +80,8 @@ The public summary is defined precisely in `brand-schema-spec/SPEC.summary.schem
 - `commercial` (entire component)
 - `governance` (entire component)
 
+These exclusions apply only to the public summary, identically for every brand. They are not reserved for a paid tier: every field stays in your full schema, and no paid tier supplies any of them. Myth evolution, pillars, context variants and rails become includable in the summary from spec 3.0.0.
+
 ---
 
 ## Market tier encoding
