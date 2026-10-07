@@ -23,7 +23,7 @@ Validates schema files against the spec/validators.
 
 ### `ramoira publish`
 
-Publishes the summary schema (may require an account, depending on deployment).
+Publishes the summary schema to ramoira.com (free account required). Publishing does not ratify the schema; it stays a candidate.
 
 ### `ramoira status`
 

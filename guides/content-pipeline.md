@@ -4,9 +4,7 @@ In a pipeline, treat the schema as a versioned dependency:
 
 - Load schema by version/alias (e.g. `current`)
 - Generate content for a specific surface
-- Preflight check
+- Check your own output against the schema (a self-check: useful tooling, not an independent check)
 - Store the schema version alongside output for traceability
 
-In the platform implementation, publication and lifecycle are documented in:
-
-- `platform/docs/brand-schema-generation.md`
+A schema the brand has not ratified is a **candidate**. Content produced with it is not "certified" or "approved" by having used it.

@@ -2,6 +2,8 @@
 
 Cursor reads files in your project directory. Add `brand.schema.json` to your project and reference it in your system prompt or rules file — Cursor will apply your brand schema automatically.
 
+> **A generated schema is a candidate.** What `ramoira init` produces is a draft until the brand reviews and ratifies it. Content your tools produce with it is not "certified" or "approved" by having used it.
+
 ---
 
 ## Setup

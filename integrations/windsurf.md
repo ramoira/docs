@@ -2,6 +2,8 @@
 
 Windsurf reads project files and uses them as context. Add `brand.schema.json` to your project and reference it in your Windsurf rules — the schema will be applied automatically.
 
+> **A generated schema is a candidate.** What `ramoira init` produces is a draft until the brand reviews and ratifies it. Content your tools produce with it is not "certified" or "approved" by having used it.
+
 ---
 
 ## Setup
