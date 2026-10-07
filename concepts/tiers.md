@@ -2,7 +2,7 @@
 
 Drafting, validating, publishing and sharing a brand schema are free. No tier makes a schema more trustworthy, and Ramoira does not certify schemas or content.
 
-What will distinguish one schema from another is whether the brand has **ratified** it and whether content is **checked** against it. Neither is available yet. Until a brand ratifies a schema, it is a **candidate**, whether it is local or published.
+What will distinguish one schema from another is whether the brand has **[ratified](ratification.md)** it and whether content is **[checked](conformance-vs-faithfulness.md)** against it. Neither is available yet. Until a brand ratifies a schema, it is a **candidate**, whether it is local or published.
 
 ---
 
@@ -42,7 +42,7 @@ Publishing does not ratify the schema. A published summary is still a candidate.
 
 ### `certified` and `confidence` (deprecated)
 
-Older summaries may carry `meta.certified` and `meta.confidence`. Both are deprecated and will be removed in spec 3.0.0. Neither says anything about the schema's quality, whether the brand ratified it, or whether content conforms to it. Agent pipelines should not read either field.
+Older summaries may carry `meta.certified` and `meta.confidence`. Both are deprecated and are removed in spec 3.0.0. Neither says anything about the schema's quality, whether the brand ratified it, or whether content conforms to it. Agent pipelines should not read either field.
 
 ---
 

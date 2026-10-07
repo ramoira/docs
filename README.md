@@ -6,6 +6,8 @@ Start here:
 
 - `concepts/what-is-a-brand-schema.md`
 - `concepts/how-agents-consume-schemas.md`
+- `concepts/ratification.md`
+- `concepts/conformance-vs-faithfulness.md`
 - `reference/schema-fields.md`
 - `reference/cli.md`
 
