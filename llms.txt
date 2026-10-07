@@ -18,4 +18,4 @@ github.com/ramoira/brand-schema-spec/blob/main/SPEC.md
 
 ## Example schema
 
-github.com/ramoira/brand-schema-spec/examples/little-rituals/
+github.com/ramoira/brand-schema-spec/tree/main/examples (fictional brands; none is a ratified schema)

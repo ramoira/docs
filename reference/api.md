@@ -8,12 +8,14 @@ The Ramoira Brand API has two categories of endpoints: public (no auth required)
 
 These require no authentication. They serve the published summary schema for any brand that has run `ramoira publish`.
 
+The examples below use `corvane`, a fictional brand.
+
 ### GET /brands/[slug]/schema.summary.json
 
 Returns the public summary schema for a brand.
 
 ```
-GET https://ramoira.com/brands/little-rituals/schema.summary.json
+GET https://ramoira.com/brands/corvane/schema.summary.json
 ```
 
 **Response** — `200 OK`, `application/json`
@@ -23,11 +25,11 @@ A valid `SPEC.summary.schema.json` document. See [schema-fields.md](schema-field
 ```json
 {
   "meta": {
-    "brandId": "little-rituals",
-    "brandName": "Little Rituals",
+    "brandId": "corvane",
+    "brandName": "Corvane",
     "schemaVersion": "2.0.0",
     "schemaType": "summary",
-    "canonicalURL": "https://ramoira.com/brands/little-rituals/schema.summary.json"
+    "canonicalURL": "https://ramoira.com/brands/corvane/schema.summary.json"
   },
   "identity": { ... },
   "narrative": { ... },
@@ -48,7 +50,7 @@ A valid `SPEC.summary.schema.json` document. See [schema-fields.md](schema-field
 Returns the current publication state for a brand.
 
 ```
-GET https://ramoira.com/brands/little-rituals/status
+GET https://ramoira.com/brands/corvane/status
 ```
 
 **Response** — `200 OK`, `application/json`
@@ -56,7 +58,7 @@ GET https://ramoira.com/brands/little-rituals/status
 ```json
 {
   "workflowState": "published",
-  "canonicalUrl": "https://ramoira.com/brands/little-rituals/schema.summary.json"
+  "canonicalUrl": "https://ramoira.com/brands/corvane/schema.summary.json"
 }
 ```
 
@@ -84,7 +86,7 @@ These require a Bearer token. Get a token at [ramoira.com/tokens](https://ramoir
 Publishes a full brand schema. Called by `ramoira publish`.
 
 ```
-POST https://ramoira.com/api/brands/little-rituals/publish
+POST https://ramoira.com/api/brands/corvane/publish
 Authorization: Bearer <token>
 Content-Type: application/json
 ```
@@ -105,7 +107,7 @@ The full schema must pass local validation (`SPEC.schema.json`) before sending. 
 {
   "versionId": "ver_abc123",
   "workflowState": "published",
-  "canonicalUrl": "https://ramoira.com/brands/little-rituals/schema.summary.json"
+  "canonicalUrl": "https://ramoira.com/brands/corvane/schema.summary.json"
 }
 ```
 
