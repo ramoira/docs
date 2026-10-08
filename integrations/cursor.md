@@ -1,70 +1,57 @@
 # Using Ramoira with Cursor
 
-Cursor reads files in your project directory. Add `brand.schema.json` to your project and reference it in your system prompt or rules file — Cursor will apply your brand schema automatically.
+Cursor reads project files and rules. Add a rule that points at your brand brief, and Cursor applies your schema without re-briefing.
 
-> **A generated schema is a candidate.** What `ramoira init` produces is a draft until the brand reviews and ratifies it. Content your tools produce with it is not "certified" or "approved" by having used it.
+> **A drafted schema is a candidate.** What `ramoira init` produces is a draft until the brand reviews and [ratifies](../concepts/ratification.md) it. Content your tools write with it is not "certified" or "approved" by having used it.
 
 ---
 
 ## Setup
 
-**1. Generate a schema**
+**1. Draft a schema**
 
 ```sh
 npx ramoira init
 ```
 
-This creates `brand.schema.json` in your current directory.
+This writes `ramoira/brand.schema.json` and `ramoira/agents.md`, a plain-language brief for AI tools.
 
-**2. Add a brand rule to `.cursorrules`**
-
-Create or edit `.cursorrules` in your project root:
+**2. Add a project rule** (`.cursor/rules/brand.mdc`, or `.cursorrules`)
 
 ```
-## Brand context
-
-This project uses a Ramoira brand schema at brand.schema.json.
-
-Before generating any copy, marketing content, or user-facing text:
-1. Read brand.schema.json
-2. Apply identity.summary.neverDo as absolute constraints
-3. Match voice.approvedTones; avoid voice.forbiddenTones
-4. Study voice.examples — especially the rejected ones
-5. Apply voice.base.structuralRules to every sentence
-6. Check output against governance.preflight before returning
+Before writing any copy or user-facing text, read ramoira/agents.md (and ramoira/brand.schema.json for detail).
+- Follow its rules exactly; absolute rules are never broken.
+- Make only the product claims it lists.
+- Match its approved tones and the examples the brand judged; avoid what the rejected examples show.
 ```
 
-**3. (Optional) Publish for remote access**
+---
+
+## What to load, in order
+
+1. The **rules** for the surface (`surfaces` is `"all"` or includes it). `absolute` rules are never broken; `strong` ones need the brand's sign-off.
+2. **`voice.examples`**: the brand's approved and rejected lines, with reasons. The rejected ones show what it never sounds like.
+3. **`voice.approvedTones`** and `voice.base` (vocabulary, humour).
+4. **`voice.contextVariants`** for the surface, and the **rails**.
+5. **`narrative.semiotic.denotative.claims`**: the only product claims the brand makes.
+
+`ramoira/agents.md` covers the public rules, claims, tones, the examples the brand judged and per-surface notes, taken from the public summary. Read the schema itself for rails and private rules.
+
+## Checking a draft
 
 ```sh
-export RAMOIRA_TOKEN=your_token
+npx ramoira check --surface product_detail_page draft.txt
+```
+
+`check` runs the schema's rules over the draft and names each rule it breaks, quoting the span. It does not suggest rewrites; revising is yours. It is a self-check, not an independent check.
+
+---
+
+## Remote access (optional)
+
+```sh
+npx ramoira login
 npx ramoira publish
 ```
 
-Published summary URL: `https://ramoira.com/brands/[slug]/schema.summary.json`
-
----
-
-## How agents should load the schema
-
-For most tasks, Cursor reads `brand.schema.json` directly from the project.
-
-Priority fields for generation:
-
-1. `identity.summary` — one-line brief, three adjectives, never-do list
-2. `voice.approvedTones` and `voice.forbiddenTones`
-3. `voice.examples` — the rejected examples define what this brand will never sound like
-4. `voice.base.structuralRules` — prose-level constraints
-5. `governance.severity.absolute.constraints` — hard stops
-
----
-
-## Remote schema access
-
-For agents outside your project directory, the published summary is publicly accessible:
-
-```
-https://ramoira.com/brands/[slug]/schema.summary.json
-```
-
-This URL can be added to any agent context that accepts external URLs.
+The public summary is then at `https://ramoira.com/brands/<slug>/schema.summary.json`. It holds the public rules and the identity, narrative and voice layers; private rules and the commercial and governance layers stay out unless the brand opted them in.

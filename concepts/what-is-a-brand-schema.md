@@ -1,98 +1,89 @@
 # What is a brand schema?
 
-A **brand schema** is a structured, versioned, machine-readable definition of a brand. It encodes what an AI system needs to generate on-brand content — not just tone of voice, but narrative meaning, commercial rules, and governance constraints.
+A **brand schema** is a structured, machine-readable statement of what a brand means: its rules, and the facts and voice behind them. Producers (agencies, freelancers, in-house teams, AI tools) read it to make content that fits the brand. Checkers read its rules to test content against it.
 
-Instead of re-briefing an LLM every session, the schema becomes the canonical context layer.
+The format is open: [brand-schema-spec](https://github.com/ramoira/brand-schema-spec), version 3.0.0. That spec is normative; this page explains it.
 
 ---
 
 ## Why schemas exist
 
-LLMs drift toward **category norms**.
+Given only a brand name and a task, a model writes the voice of the category, not the brand. Even with careful prompting, it tends to:
 
-Given only a brand name and a task, a model produces output that is technically coherent but tonally generic — the voice of the category, not the brand. Even with careful prompting, models tend to:
+- swap specific voice for generic labels ("warm", "premium");
+- reach for conversion tactics the brand never uses (urgency, discounting, fear);
+- make claims the brand cannot support, or name competitors it never names.
 
-- substitute generic tonal labels ("warm", "friendly", "premium") for specific brand voice
-- introduce conversion tactics that break brand positioning (urgency, discounting, fear framing)
-- violate taboo territory (forbidden comparisons, unsupported claims, wrong cultural register)
-
-A schema makes brand constraints explicit and machine-checkable. The rejected voice examples, the governance constraints, the preflight questions — these prevent drift.
+A schema makes the brand's rules explicit, once, so every producer and every tool works from the same measure, and so content can be checked against it.
 
 ---
 
-## The five components
-
-### identity
-
-Who the brand is.
-
-- **`prism`** — the Kapferer Brand Identity Prism: physique, personality, culture, relationship, reflection, selfImage. Encodes how the brand relates to its customers (`relationship.mode`), its personality dimensions (5 Brand Personality scores), and what it looks like.
-- **`distinctiveAssets`** — visual (primary color, photography style), sonic (genre, tempo), linguistic (owned phrases, typographic voice). `typographicVoice.sentenceStructure` is one of the highest-signal fields for preventing voice drift.
-- **`summary`** — the three fields agents load first: `oneLineBrief`, `threeAdjectives`, `neverDo`.
-
-### narrative
-
-What the brand stands for.
-
-- **`semiotic`** — two layers: `denotative` (what the brand literally makes or does) and `connotative` (what it means, the emotional register, the semantic territories it owns). `layerHierarchy` determines which leads in generation.
-- **`myth`** — the brand's core belief (`mythStatement`) and the test for whether content carries it (`mythTest`).
-- **`contentTest`** — three testable questions (myth, connotative, tone) to run on any generated content.
-- **`pillars`**, **`mythEvolution`**, **`editorial`** — deeper narrative structure for content strategy and long-form generation.
-
-### voice
-
-How the brand speaks.
-
-- **`base`** — core voice parameters: sentence length, vocabulary level, humour, structural rules. `structuralRules` are the prose-level constraints that shape every sentence.
-- **`approvedTones`** and **`forbiddenTones`** — explicit tonal labels. Both are required.
-- **`examples`** — approved and rejected writing samples with reasons. Rejected examples (verdict: `"rejected"`) carry the contrast signal — what this brand will never sound like.
-- **`contextVariants`** — surface-specific voice adjustments for each `OutputSurface`.
-- **`rails`** — global and conditional generation instructions.
-
-### commercial
-
-What the brand can and cannot say about money, claims, and competitors.
-
-- **`pricing`** — encodes the commercial tier (`style`), whether prices can be shown, whether discounting is permitted, and what urgency/scarcity language is allowed.
-- **`claims`** — approved claims (with evidence requirements), forbidden claims, comparative rules, superlative rules.
-- **`globalForbiddenTerms`** — terms that can never appear in any generated output, with severity and rationale.
-- **`offers`**, **`socialProof`**, **`surfaceRules`** — per-surface commercial rules.
-
-### governance
-
-The rules that override everything else.
-
-- **`severity`** — three tiers: `absolute` (never violated, block output), `strong` (override process required, flag for review), `contextual` (judgment permitted within stated bounds, log for audit).
-- **`preflight`** — three brand-specific yes/no questions to run on any generated content before it is used.
-- **`surfaceRules`** — per-surface and per-intent governance rules, including `intentRules` mapped to `UserIntent`.
-- **`conflictResolution`** — how to resolve conflicts between components.
-- **`compliance`** — violation routing, geographic overrides, zero-tolerance terms.
-
----
-
-## Component architecture
-
-Every component carries two identifying fields:
+## What is in a schema
 
 ```json
 {
-  "_component": "voice",
-  "_version": "2.0.0"
+  "ramoira":    { },
+  "rules":      [ ],
+  "identity":   { },
+  "narrative":  { },
+  "voice":      { },
+  "commercial": { },
+  "governance": { }
 }
 ```
 
-`_component` is a constant string matching the component name. `_version` is the semver for that component. This allows tools to validate and migrate components independently.
+### `rules`: everything that can be checked
+
+Every prohibition and requirement lives once, in one list. Each rule has an id, a plain statement, how it is checked, how serious a breach is, and where it applies:
+
+| Field | What it says |
+|:---|:---|
+| `rule_id`, `statement` | The rule, citable by id |
+| `check_class` | `deterministic_exact` (words and phrases), `deterministic_structural` (numbers, required phrases, approved claims) or `judged_bounded` (judgment, grounded in examples the brand judged) |
+| `severity` | `absolute` (the item fails), `strong` (the item needs review) or `contextual` (logged) |
+| `surfaces`, `markets`, `situations`, `modality` | Where, for whom and when it applies |
+| `visibility` | Whether it appears in the public summary |
+| `provenance`, `affirmed` | Whether the brand wrote it or affirmed it |
+
+A judged rule is only allowed when the brand has judged examples on both sides of the line ("this is us", "this is not us, because…"). Something the brand cannot yet illustrate is not a rule: it is a guidance question in `narrative.guidance`.
+
+### The five layers: facts and voice
+
+| Layer | What it holds |
+|:---|:---|
+| `identity` | Who the brand is: the brand identity prism (physique, personality, culture, relationship, reflection, self-image) and distinctive assets (colours, sound, owned phrases) |
+| `narrative` | What it stands for: what it makes, the **approved claims**, the myth it tells, its pillars and editorial approach |
+| `voice` | How it speaks: vocabulary and humour, approved tones, **examples the brand judged** (approved and rejected, with reasons), per-surface variants and rails |
+| `commercial` | Pricing style, approved superlatives, offers, social proof |
+| `governance` | How rules interact, per-surface behaviour, situations (a recall, an accusation), who may override a `strong` finding |
+
+Layers hold facts and density. They hold no prohibitions; those are rules.
+
+### `ramoira`: metadata
+
+`spec_version`, `brand_id` (the brand's slug), `schema_version` (a human label), `content_hash`, `workflow_state` (`draft`, `in_review`, `published`, `archived`), `ratification` and a few publishing fields.
+
+**`content_hash` is the version.** It is a SHA-256 over the rules and the five layers, so any change to meaning changes it, and nothing else does. Every check binds to a hash: when the schema changes, earlier results stay attached to the old one.
 
 ---
 
-## Full schema vs summary schema
+## Candidate or ratified
 
-| | Full (`brand.schema.json`) | Summary (`brand.schema.summary.json`) |
+Anyone can draft a schema: `ramoira init`, an agency, a team. A draft is a **candidate**. It becomes the brand's measure only when the brand **[ratifies](ratification.md)** it. Until then `ramoira.ratification` is `null`, and nothing checked against it can stand as more than a self-check.
+
+## Meaning, never results
+
+A schema says what the brand means. It never carries results about itself: no certification, no confidence, no score. Results of checks live in a separate record. See [conformance and faithfulness](conformance-vs-faithfulness.md).
+
+---
+
+## Full schema and public summary
+
+| | Full (`ramoira/brand.schema.json`) | Summary (`schema.summary.json`) |
 |:---|:---|:---|
-| **Location** | Local project directory | Public URL at ramoira.com |
-| **Includes** | All five components | Identity + narrative + voice (subset) |
-| **Excludes** | — | Commercial, governance, full linguistic assets, contextVariants, rails |
-| **Who reads it** | Local agents (Cursor, Claude Code, Windsurf) | Remote agents, LLM crawlers, collaborators |
-| **Auth required** | No (local file) | No (public URL) |
+| **Where** | Your project; sent privately to Ramoira when you publish | Public at `ramoira.com/brands/<slug>/schema.summary.json` |
+| **Rules** | All | Public rules only |
+| **Layers** | All five | `identity`, `narrative` and `voice` in full; `commercial` and `governance` only if you opt them in |
+| **Who reads it** | Your own tools and producers you share it with | Anyone: remote agents, crawlers, collaborators |
 
-The summary is designed for accurate representation — enough signal for on-brand generation without exposing commercially sensitive rules. See [tiers.md](tiers.md) for the exact field list.
+What the summary holds is identical for every brand at every tier. See [publishing](../guides/publishing.md).

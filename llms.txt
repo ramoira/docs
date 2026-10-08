@@ -1,18 +1,21 @@
 # Ramoira Documentation
 
-Ramoira publishes an open schema format for brand identity
-in the agent web.
+Ramoira publishes an open schema format (spec 3.0.0) for what a brand means, so agents and people can write and check against it.
 
 ## Key documents
 
 - [What is a brand schema](concepts/what-is-a-brand-schema.md)
+- [How agents consume schemas](concepts/how-agents-consume-schemas.md): what to load, in which order
 - [Ratification](concepts/ratification.md): candidate vs ratified schemas
 - [Conformance and faithfulness](concepts/conformance-vs-faithfulness.md): two different checks, never one
-- [CLI reference](reference/cli.md)
+- [What is free](concepts/tiers.md)
 - [Schema fields](reference/schema-fields.md)
-- [Cursor integration](integrations/cursor.md)
-- [Claude Code integration](integrations/claude-code.md)
+- [CLI reference](reference/cli.md)
+- [API reference](reference/api.md)
 - [First schema guide](guides/first-schema.md)
+- [Publishing](guides/publishing.md)
+- [Claude Code integration](integrations/claude-code.md)
+- [Cursor integration](integrations/cursor.md)
 
 ## Schema spec
 
@@ -20,4 +23,4 @@ github.com/ramoira/brand-schema-spec/blob/main/SPEC.md
 
 ## Example schema
 
-github.com/ramoira/brand-schema-spec/tree/main/examples (fictional brands; none is a ratified schema)
+github.com/ramoira/brand-schema-spec/tree/main/examples (a fictional brand; not a ratified schema)

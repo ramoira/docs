@@ -1,53 +1,58 @@
 # Using Ramoira with Windsurf
 
-Windsurf reads project files and uses them as context. Add `brand.schema.json` to your project and reference it in your Windsurf rules — the schema will be applied automatically.
+Windsurf reads project files and its rules. Add a rule that points at your brand brief, and Windsurf applies your schema without re-briefing.
 
-> **A generated schema is a candidate.** What `ramoira init` produces is a draft until the brand reviews and ratifies it. Content your tools produce with it is not "certified" or "approved" by having used it.
+> **A drafted schema is a candidate.** What `ramoira init` produces is a draft until the brand reviews and [ratifies](../concepts/ratification.md) it. Content your tools write with it is not "certified" or "approved" by having used it.
 
 ---
 
 ## Setup
 
-**1. Generate a schema**
+**1. Draft a schema**
 
 ```sh
 npx ramoira init
 ```
 
-This creates `brand.schema.json` in your current directory.
+This writes `ramoira/brand.schema.json` and `ramoira/agents.md`, a plain-language brief for AI tools.
 
-**2. Add a brand rule**
-
-Add to your Windsurf rules file or system prompt:
+**2. Add a rule** (Windsurf rules file or workspace rules)
 
 ```
-This project has a Ramoira brand schema at brand.schema.json.
-
-Before generating any copy or user-facing content, read brand.schema.json and apply:
-- identity.summary.neverDo as absolute constraints
-- voice.approvedTones / voice.forbiddenTones
-- voice.examples (pay attention to rejected examples)
-- voice.base.structuralRules
-- governance.preflight — verify output against all three questions
+This project has a Ramoira brand schema. Before writing any copy or user-facing content,
+read ramoira/agents.md (and ramoira/brand.schema.json for detail):
+- follow its rules exactly; absolute rules are never broken;
+- make only the product claims it lists;
+- match its approved tones and the examples the brand judged.
 ```
-
-**3. (Optional) Publish for remote access**
-
-```sh
-export RAMOIRA_TOKEN=your_token
-npx ramoira publish
-```
-
-Published summary URL: `https://ramoira.com/brands/[slug]/schema.summary.json`
 
 ---
 
-## Priority fields
+## What to load, in order
 
-| Field | Why it matters |
-|:---|:---|
-| `identity.summary.neverDo` | Absolute constraints — apply to every surface |
-| `voice.forbiddenTones` | Tonal hard stops |
-| `voice.examples` (rejected) | The contrast signal — what this brand never sounds like |
-| `voice.base.structuralRules` | Sentence-level shaping |
-| `governance.severity.absolute.constraints` | Non-negotiable constraints |
+1. The **rules** for the surface (`surfaces` is `"all"` or includes it). `absolute` rules are never broken; `strong` ones need the brand's sign-off.
+2. **`voice.examples`**: the brand's approved and rejected lines, with reasons. The rejected ones show what it never sounds like.
+3. **`voice.approvedTones`** and `voice.base` (vocabulary, humour).
+4. **`voice.contextVariants`** for the surface, and the **rails**.
+5. **`narrative.semiotic.denotative.claims`**: the only product claims the brand makes.
+
+`ramoira/agents.md` covers the public rules, claims, tones, the examples the brand judged and per-surface notes, taken from the public summary. Read the schema itself for rails and private rules.
+
+## Checking a draft
+
+```sh
+npx ramoira check --surface product_detail_page draft.txt
+```
+
+`check` runs the schema's rules over the draft and names each rule it breaks, quoting the span. It does not suggest rewrites; revising is yours. It is a self-check, not an independent check.
+
+---
+
+## Remote access (optional)
+
+```sh
+npx ramoira login
+npx ramoira publish
+```
+
+The public summary is then at `https://ramoira.com/brands/<slug>/schema.summary.json`. It holds the public rules and the identity, narrative and voice layers; private rules and the commercial and governance layers stay out unless the brand opted them in.

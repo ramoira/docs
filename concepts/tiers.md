@@ -1,8 +1,8 @@
-# Tiers
+# What is free
 
-Drafting, validating, publishing and sharing a brand schema are free. No tier makes a schema more trustworthy, and Ramoira does not certify schemas or content.
+Everything you do with your own brand schema is free: drafting it, validating it, rendering a brand book, checking content against it yourself, publishing it and sharing it. None of it sits behind a paywall, and none of it, except publishing, needs an account.
 
-What will distinguish one schema from another is whether the brand has **[ratified](ratification.md)** it and whether content is **[checked](conformance-vs-faithfulness.md)** against it. Neither is available yet. Until a brand ratifies a schema, it is a **candidate**, whether it is local or published.
+No tier makes a schema more trustworthy. Ramoira does not certify schemas or content. What distinguishes one schema from another is whether the brand has **[ratified](ratification.md)** it and whether content is **[checked](conformance-vs-faithfulness.md)** against it, independently. Neither is available yet. Until a brand ratifies a schema, it is a **candidate**, local or published.
 
 ---
 
@@ -10,102 +10,58 @@ What will distinguish one schema from another is whether the brand has **[ratifi
 
 | | Local | Published |
 |:---|:---|:---|
-| **Account required** | No | Yes (free) |
-| **Public URL** | — | ✓ candidate (unratified) |
-| **`workflowState`** | `draft` | `published` |
-| **`ramoira init`** | ✓ | ✓ |
-| **`ramoira validate`** | ✓ | ✓ |
+| **Account** | None | Free account (GitHub or an emailed sign-in link) |
+| **`ramoira init`, `validate`, `book`, `check`** | ✓ | ✓ |
 | **`ramoira publish`** | — | ✓ |
+| **Public summary URL** | — | ✓ (a candidate until ratified) |
 
-The account exists so that a brand's slug belongs to whoever owns it. It is not a pricing tier.
-
----
-
-## What each option provides to agents
+The account exists so that a brand's slug belongs to whoever owns it. Sign-up is self-serve, with nothing to approve. It is not a pricing tier.
 
 ### Local
 
-The full `brand.schema.json` lives in your project directory. Agents with access to the project (Cursor, Claude Code, Windsurf) read it directly from disk. Nothing is accessible remotely.
+`ramoira/brand.schema.json` lives in your project. Tools with access to the project read it, or the plain-language brief `ramoira init` writes beside it (`ramoira/agents.md`). Nothing is reachable remotely.
 
 ### Published
 
-Running `ramoira publish` extracts a summary schema and serves it at a stable public URL:
+`ramoira publish` sends the full schema to Ramoira, which keeps it private and serves the public summary:
 
 ```
-https://ramoira.com/brands/[slug]/schema.summary.json
-https://ramoira.com/brands/[slug]/status
+https://ramoira.com/brands/<slug>/schema.summary.json
+https://ramoira.com/brands/<slug>/status
 ```
-
-Remote agents, LLM crawlers, and collaborators can fetch this from anywhere. The full schema is never served publicly — only the summary.
 
 Publishing does not ratify the schema. A published summary is still a candidate.
-
-### `certified` and `confidence` (deprecated)
-
-Older summaries may carry `meta.certified` and `meta.confidence`. Both are deprecated and are removed in spec 3.0.0. Neither says anything about the schema's quality, whether the brand ratified it, or whether content conforms to it. Agent pipelines should not read either field.
 
 ---
 
 ## What the summary includes
 
-The public summary is defined precisely in `brand-schema-spec/SPEC.summary.schema.json`. It uses `additionalProperties: false` throughout — a document containing fields outside this list fails validation.
-
-**Included:**
-
-| Field | Notes |
+| | In the public summary |
 |:---|:---|
-| `meta.brandId`, `meta.brandName`, `meta.schemaVersion` | Always present |
-| `meta.schemaType: "summary"` | Constant |
-| `meta.canonicalURL` | Set by Ramoira on publish |
-| `meta.certified`, `meta.confidence` | Deprecated; removed in 3.0.0. Do not rely on them. |
-| `identity.summary` | `oneLineBrief`, `threeAdjectives` (exactly 3), `neverDo` (min 1) |
-| `identity.prism.relationship` | `mode`, `formality`, `warmth` |
-| `narrative.semiotic.denotative.categoryDescriptor` | Only this field from denotative |
-| `narrative.semiotic.connotative.meaningClusters` | Min 1 item |
-| `narrative.semiotic.connotative.emotionalRegister` | |
-| `narrative.myth.mythStatement` | |
-| `narrative.myth.mythTest` | |
-| `narrative.contentTest` | `mythTest`, `connotativeTest`, `toneTest` |
-| `voice.base` | `sentenceLength`, `vocabularyLevel`, `humourPermitted`, `humourStyle` only |
-| `voice.approvedTones` | Min 1 |
-| `voice.forbiddenTones` | Min 1 |
-| `voice.examples` | Min 4 total, min 2 approved + min 2 rejected |
+| `ramoira` | Always, with the full schema's `content_hash` |
+| Rules with `visibility: public` | Always |
+| `identity`, `narrative`, `voice` | Always, in full: rejected examples, context variants, rails, myth evolution and pillars included |
+| `identity.prism.culture.sacredBoundary` | Only if you opt in |
+| `commercial`, `governance` | Only if you opt in (`ramoira.summary_opt_in`) |
+| Rules with `visibility: private` | Never |
+| `draft_provenance` | Never |
 
-**Excluded:**
-
-- `identity.distinctiveAssets` (colors, sonic, full linguistic assets)
-- `narrative.semiotic.layerHierarchy`, `forbiddenMeanings`, `minimumConnotativeTest`
-- `narrative.mythEvolution`, `narrative.pillars`, `narrative.editorial`
-- `voice.base.structuralRules`, `voice.contextVariants`, `voice.rails`
-- `commercial` (entire component)
-- `governance` (entire component)
-
-These exclusions apply only to the public summary, identically for every brand. They are not reserved for a paid tier: every field stays in your full schema, and no paid tier supplies any of them. Myth evolution, pillars, context variants and rails become includable in the summary from spec 3.0.0.
+These defaults are the same for every brand. Nothing is withheld from the summary because of pricing.
 
 ---
 
-## Market tier encoding
+## What is paid
 
-Ramoira does not use a separate market tier field. Commercial positioning (luxury / premium / mid / mass) is encoded into `commercial.pricing.style` and the associated pricing flags:
-
-| Market tier | `pricing.style` | `priceDisplayPermitted` | `discountPermitted` |
-|:---|:---|:---:|:---:|
-| Luxury | `opaque` | false | false |
-| Premium | `transparent` | true | false |
-| Mid-market | `anchored` | true | true |
-| Mass-market | `value_led` | true | true |
+Ramoira's hosted **diagnostics** of a schema (the first is a stress test of how the rules hold up) are a paid service. They describe the schema, never as a quality or certification score, and they never return generated content. Validating, checking and publishing your own schema stay free.
 
 ---
 
-## Schema lifecycle
+## Lifecycle
 
-```
-draft → published
-```
+`ramoira.workflow_state` is the publication lifecycle only: `draft`, `in_review`, `published`, `archived`. There is no `certified` state. Ratification is not a lifecycle state either: it is a separate act by the brand, recorded by Ramoira and pointed to from `ramoira.ratification`.
 
-- `draft` — created locally by `ramoira init`. Not on ramoira.com until `ramoira publish` is called.
-- `published` — summary is public at the canonical URL. `workflowState: "published"`.
+Each publish keeps the version it published, bound to its `content_hash`. `ramoira status` shows what is true now.
 
-There is no `certified` state. Ratification is not a lifecycle state either: it is a separate act by the brand, and spec 3.0.0 records it separately.
+### `certified` and `confidence`
 
-Previous versions are not deleted. `ramoira status` shows the current published version and its state.
+Schemas from spec 2.0.0 could carry `meta.certified` and `meta.confidence`. Both were removed in 3.0.0. Neither said anything about the schema's quality, whether the brand ratified it, or whether content conforms to it.
