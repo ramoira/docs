@@ -1,32 +1,51 @@
-# First schema guide
+# Your first schema
 
-This guide describes the expected workflow with the Ramoira CLI.
+From nothing to a published candidate. Everything here is free; only the last step needs an account.
 
-## 1) Install
-
-```bash
-npm install -g ramoira
-```
-
-## 2) Generate a schema
-
-From your project root:
+## 1. Draft it
 
 ```bash
-ramoira init
+export ANTHROPIC_API_KEY=sk-ant-…     # your own key: init drafts with your model
+npx ramoira init
 ```
 
-Expected output (by convention):
+`init` asks who is answering and about the brand: what it makes, what it believes, its tones, the words it never uses, its claims, competitors and the surfaces it writes for. Your model drafts the rest into a fixed shape, and the CLI builds a complete five-layer 3.0.0 schema:
 
-- `./ramoira/brand.schema.json` (full schema)
-- `./ramoira/brand.schema.summary.json` (summary schema)
+- `ramoira/brand.schema.json`: the schema;
+- `ramoira/agents.md`: a plain-language brief for your AI tools.
 
-## 3) Use it in an agent
+Along the way it shows you a few sample lines for each rule that needs judgment, and you mark each one "that's us" or "not us". Only lines you judged become examples in your schema. Rules the model proposed are marked as not yet affirmed by you.
 
-Most MCP-aware tools can be configured to load schema context automatically.
+The result is a **candidate**: your draft of what the brand means, until the brand [ratifies](../concepts/ratification.md) it.
 
-See integrations:
+## 2. Review and edit
 
-- `integrations/cursor.md`
-- `integrations/claude-code.md`
-- `integrations/windsurf.md`
+Open `ramoira/brand.schema.json`. Affirm, edit or delete each proposed rule (`"affirmed": false`), and fill anything left empty. Then:
+
+```bash
+npx ramoira validate
+```
+
+## 3. See it
+
+```bash
+npx ramoira book            # an HTML brand book, no model needed
+npx ramoira book --probe    # judge more sample lines first; the ones you mark become examples
+```
+
+## 4. Use it
+
+Point your AI tools at `ramoira/agents.md` or the schema: see [Claude Code](../integrations/claude-code.md), [Cursor](../integrations/cursor.md), [Windsurf](../integrations/windsurf.md). Check drafts against your rules:
+
+```bash
+npx ramoira check --surface social_organic post.txt
+```
+
+## 5. Publish
+
+```bash
+npx ramoira login
+npx ramoira publish
+```
+
+See [publishing](publishing.md).

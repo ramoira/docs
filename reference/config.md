@@ -1,20 +1,22 @@
-# `ramoira.config.json`
+# Project conventions
 
-`ramoira.config.json` is a small project-root config file used by tools that automatically load brand context.
+Tools that load brand context automatically can rely on these paths, which `ramoira init` writes:
 
-## Recommended convention
+| Path | What |
+|:---|:---|
+| `ramoira/brand.schema.json` | The full 3.0.0 schema |
+| `ramoira/agents.md` | A plain-language brief for AI tools, built from the public summary: public rules, claims, voice, the examples the brand judged, per-surface notes. Private rules stay out. |
 
-If you are building an agent/tool integration and want a default:
+A published summary lives at `https://ramoira.com/brands/<slug>/schema.summary.json`, where `<slug>` is `ramoira.brand_id` in the schema.
 
-- presence of `ramoira.config.json` indicates “this repo is brand-aware”
-- schema files live at:
-  - `./ramoira/brand.schema.json`
-  - `./ramoira/brand.schema.summary.json`
+## `ramoira.config.json` (optional)
 
-A minimal config can include:
+A tool that wants an explicit marker that a repository is brand-aware can look for a `ramoira.config.json` at the project root:
 
 ```json
 {
-  "brandId": "your-brand-id"
+  "brand_id": "your-brand-slug"
 }
 ```
+
+The Ramoira CLI does not read this file; it is a convention for integrations. The CLI's own settings (your API token and model key) live in `~/.ramoira/config.json`.

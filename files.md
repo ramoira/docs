@@ -6,7 +6,9 @@ ramoira/docs/
 ├── concepts/
 │   ├── what-is-a-brand-schema.md
 │   ├── how-agents-consume-schemas.md
-│   └── tiers.md
+│   ├── ratification.md            ← candidate vs ratified
+│   ├── conformance-vs-faithfulness.md
+│   └── tiers.md                   ← what is free
 │
 ├── integrations/
 │   ├── cursor.md
@@ -18,6 +20,7 @@ ramoira/docs/
 ├── guides/
 │   ├── first-schema.md            ← ramoira init walkthrough
 │   ├── publishing.md              ← ramoira publish walkthrough
+│   ├── claude-coworking.md        ← Claude with the schema as context
 │   ├── brand-aware-copy.md        ← agent workflow using schema
 │   ├── content-pipeline.md        ← schema as dependency in a pipeline
 │   └── multi-brand.md             ← managing multiple brand schemas
@@ -26,7 +29,7 @@ ramoira/docs/
 │   ├── cli.md                     ← all CLI commands reference
 │   ├── config.md                  ← ramoira.config.json reference
 │   ├── schema-fields.md           ← every field documented
-│   └── api.md                     ← ramoira.com/api reference (public endpoints)
+│   └── api.md                     ← ramoira.com/api reference
 │
 └── citation-audit-notes/
     ├── README.md                  ← what these notes are

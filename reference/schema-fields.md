@@ -1,388 +1,126 @@
-# Schema Fields — v2.0.0
+# Schema fields — 3.0.0
 
-The Ramoira brand schema is a JSON object with six required top-level keys. This page documents every field, its type, and whether it appears in the full schema, the public summary, or both.
+A field-by-field guide to the brand schema. The normative definitions are the spec's [`SPEC.md`](https://github.com/ramoira/brand-schema-spec/blob/main/SPEC.md) and its JSON Schemas; where this page and the spec differ, the spec wins. Every object is closed: a field not listed in the spec fails validation.
 
-Full spec and JSON validators: [github.com/ramoira/brand-schema-spec](https://github.com/ramoira/brand-schema-spec)
-
----
-
-## Top-level structure
-
-```json
-{
-  "meta":       { ... },
-  "identity":   { "_component": "identity",   "_version": "2.0.0", ... },
-  "narrative":  { "_component": "narrative",  "_version": "2.0.0", ... },
-  "voice":      { "_component": "voice",      "_version": "2.0.0", ... },
-  "commercial": { "_component": "commercial", "_version": "2.0.0", ... },
-  "governance": { "_component": "governance", "_version": "2.0.0", ... }
-}
-```
-
-Every component carries `_component` (constant string) and `_version` (semver string).
+**Summary** column: ✓ always in the public summary · *opt-in* only if `ramoira.summary_opt_in` includes it · — never.
 
 ---
 
-## Full vs Summary
+## Top level
 
-| Layer | Full schema | Public summary |
-|:---|:---:|:---:|
-| `meta` | ✓ | ✓ (subset) |
-| `identity.summary` | ✓ | ✓ |
-| `identity.prism.relationship` | ✓ | ✓ |
-| `identity.prism.*` (other) | ✓ | — |
-| `identity.distinctiveAssets` | ✓ | — |
-| `narrative.semiotic.denotative.categoryDescriptor` | ✓ | ✓ |
-| `narrative.semiotic.connotative` (meaningClusters, emotionalRegister) | ✓ | ✓ |
-| `narrative.myth` | ✓ | ✓ |
-| `narrative.contentTest` | ✓ | ✓ |
-| `narrative.*` (other) | ✓ | — |
-| `voice.base` (4 core params) | ✓ | ✓ |
-| `voice.approvedTones` | ✓ | ✓ |
-| `voice.forbiddenTones` | ✓ | ✓ |
-| `voice.examples` (min 2 approved + 2 rejected) | ✓ | ✓ |
-| `voice.base.structuralRules` | ✓ | — |
-| `voice.contextVariants` | ✓ | — |
-| `voice.rails` | ✓ | — |
-| `commercial` | ✓ | — |
-| `governance` | ✓ | — |
+| Key | Required | Summary | What |
+|:---|:---:|:---:|:---|
+| `ramoira` | ✓ | ✓ | Metadata (below) |
+| `rules` | ✓ | public rules | Everything that can be checked |
+| `identity` | ✓ | ✓ | Who the brand is |
+| `narrative` | ✓ | ✓ | What it stands for, and its claims |
+| `voice` | ✓ | ✓ | How it speaks |
+| `commercial` | ✓ | *opt-in* | Pricing, offers, social proof |
+| `governance` | ✓ | *opt-in* | How rules interact, surfaces, situations, overrides |
+| `draft_provenance` | | — | How the candidate was drafted (method, participants, reactions, which fields are unfilled) |
 
 ---
 
-## Shared types
+## `ramoira`
 
-### ConstraintSeverity
-
-```
-"absolute" | "strong" | "contextual"
-```
-
-- `absolute` — never violated; violation response is block or flag-and-block
-- `strong` — violated only with explicit override process; violation response is flag for review
-- `contextual` — judgment permitted within stated bounds; violation response is log for audit
-
-### FallbackBehaviour
-
-```
-"refuse_to_generate" | "escalate_to_human" | "use_brand_default" | "use_minimal_safe"
-```
-
-### OutputSurface
-
-```
-search_result_page   paid_landing_page    product_detail_page
-comparison_page      editorial            brand_narrative
-social_organic       social_paid          email_acquisition
-email_retention      display_ad           video_script
-audio_script         press_release        customer_service
-packaging_copy       out_of_home
-```
-
-### UserIntent
-
-```
-high_intent_buyer    early_research       brand_discovery
-competitor_comparison   post_purchase     service_enquiry
-press_media          investor
-```
-
-### RelationshipMode
-
-How the brand shows up for people — expressed as the brand's own posture statement:
-
-```
-"We're like you. We just happen to know a bit more about this one thing."
-"Things can be better. Here is a small thing that helps."
-"We believe in what you can do before you do."
-"We know more. Here is the proof."
-"Built to outlast everything. Excellence as philosophy, not strategy."
-"Business as a force for change. Profit is the fuel, not the point."
-"Limits are the starting point. Mediocrity is the only enemy."
-"The category is broken. We are what replaces it."
-```
-
-### PricingStyle
-
-Encodes the brand market tier:
-
-| Value | Market tier | Meaning |
-|:---|:---|:---|
-| `opaque` | Luxury | Price never shown, no discount language |
-| `transparent` | Premium | Price shown, no discount |
-| `anchored` | Mid-market | Original price shown, discount permitted |
-| `value_led` | Mass-market | Price leads the message |
-| `simple` | Flat/subscription | Single price, no anchoring |
-
-### SentenceLength
-
-```
-"short" | "varied" | "long" | "fragments_permitted"
-```
-
-### HumourStyle
-
-```
-"dry" | "self_deprecating" | "absurdist" | "warm" | "irreverent" | "none"
-```
-
-### Score
-
-A number from 0 to 10. Used for personality dimensions, formality, warmth, vocabulary level.
-
-### Constrained\<T\>
-
-```json
-{ "value": T, "severity": ConstraintSeverity, "rationale": "string (optional)" }
-```
-
-Use `Constrained<T>` when the severity level changes how a generation pipeline responds to a violation — i.e. when a strong vs. contextual distinction would change what the agent does. Use a plain string when the constraint is always treated the same way.
-
-Appropriate for: `forbiddenWords`, `forbiddenClaims`, `ownedPhrases`, `globalForbiddenTerms`.
-Not needed for: `approvedTones`, `meaningClusters`, `structuralRules`.
-
-### Rail
-
-```json
-{
-  "context": "string",
-  "instruction": "string",
-  "example": "string (optional)",
-  "antiExample": "string (optional)"
-}
-```
-
-A scoped generation instruction. `context` names the situation; `instruction` is what to do.
-
----
-
-## meta
-
-| Field | Required | Type | Notes |
-|:---|:---:|:---|:---|
-| `brandId` | ✓ | string | URL-safe brand identifier |
-| `brandName` | ✓ | string | Human-readable brand name |
-| `schemaVersion` | ✓ | string | Semver, e.g. `"2.0.0"` |
-| `effectiveDate` | — | string | ISO date |
-| `previousVersion` | — | string | Previous semver |
-| `changelog` | — | string[] | Change notes |
-
-Summary meta additionally includes `schemaType: "summary"` and `canonicalURL`. Older summaries may carry `certified` and `confidence`; both are deprecated, removed in spec 3.0.0, and carry no meaning.
-
----
-
-## identity
-
-### identity.summary *(required)*
-
-| Field | Required | Type | Notes |
-|:---|:---:|:---|:---|
-| `oneLineBrief` | ✓ | string | One sentence capturing who this brand is |
-| `threeAdjectives` | ✓ | string[3] | Exactly 3 |
-| `neverDo` | ✓ | string[] | Min 1 — highest-signal agent constraint |
-
-### identity.prism
-
-**relationship** *(mode required)*
-
-| Field | Required | Type |
-|:---|:---:|:---|
-| `mode` | ✓ | `RelationshipMode` (archetype posture statement) |
-| `formality` | — | Score |
-| `warmth` | — | Score |
-| `pronoun` | — | `"we" | "I" | "brand_name_only"` |
-| `powerDynamic` | — | `"brand_leads" | "equal" | "customer_leads"` |
-
-**personality**
-
-| Field | Type |
+| Field | Values |
 |:---|:---|
-| `sincerity` | Score |
-| `excitement` | Score |
-| `competence` | Score |
-| `sophistication` | Score |
-| `ruggedness` | Score |
-| `characterBrief` | string |
+| `spec_version` | `"3.0.0"` |
+| `schema_type` | `full`, `summary` or `archetype` |
+| `brand_id` | The brand's slug: lowercase letters, digits and hyphens |
+| `schema_version` | A human label. The real version is `content_hash`. |
+| `content_hash` | `sha256:` + the hash of the rules and five layers (RFC 8785 canonical JSON). Any change to meaning changes it. |
+| `workflow_state` | `draft`, `in_review`, `published`, `archived` |
+| `ratification` | `null` (a candidate), or a pointer `{ratification_id, ratified_hash, ratified_at, ratifier_role}` set by Ramoira's record |
+| `account_owner_verified` | The account has proven control of the brand's domain. Not ratification. |
+| `canonical_url` | Where the published summary lives |
+| `summary_opt_in` | Any of `commercial`, `governance`, `sacred_boundary` |
 
-`culture`, `physique`, `reflection`, `selfImage` — see `brand-schema-spec/layers/identity.md`.
+---
 
-### identity.distinctiveAssets
+## `rules[]`
 
-| Sub-section | Key fields |
+| Field | Values |
 |:---|:---|
-| `visual` | `primaryColor` (ConstrainedHexColor), `secondaryColors`, `forbiddenColors`, `photographyStyle` |
-| `sonic` | `permittedGenres`, `forbiddenGenres`, `tempoRange`, `instrumentalMood` |
-| `linguistic` | `ownedPhrases` (Constrained[]), `ownedWords`, `forbiddenWords` (Constrained[]), `typographicVoice` |
+| `rule_id` | Unique; findings cite it |
+| `statement` | The rule in plain language |
+| `check_class` | `deterministic_exact`, `deterministic_structural`, `judged_bounded` |
+| `severity` | `absolute` (the item fails), `strong` (needs review unless the brand's override clears it), `contextual` (logged) |
+| `topic` | A dot path naming what the rule is about, e.g. `commercial.pricing.urgency` |
+| `surfaces` | `"all"` or a list of surfaces |
+| `markets` | `"all"` or a list of market codes |
+| `situations` | `"any"` or a list of `situation_id`s; the rule applies only while one is active |
+| `modality` | `text`, `visual`, `audio` |
+| `visibility` | `public` or `private`. Private rules never appear in the summary. |
+| `match` | Exact rules: `{terms, mode: substring \| word \| phrase, normalization: casefold_nfkc \| exact}` |
+| `predicate` | Structural rules: `{type, params}`, e.g. `max_number {field: "discount_percent", max: 15}`, `claim_must_be_approved`, `required_phrase_on_surface`, `max_character_count`, `max_sentence_words` |
+| `rubric` | Judged rules: `{question, example_refs, rail_refs}`, citing at least one approved and one rejected example, or a rail with an example and an anti-example |
+| `provenance` | `authored`, `adapted`, `inherited` |
+| `affirmed` | Whether the brand affirmed it. A schema cannot be ratified while an inherited rule is unaffirmed. |
+| `rationale` | Why the rule exists (optional) |
 
-`typographicVoice` includes `sentenceStructure`, `punctuationStyle`, `numeralStyle` — high-signal fields for preventing voice drift.
-
----
-
-## narrative
-
-### narrative.semiotic *(required)*
-
-**denotative** *(categoryDescriptor required)*
-
-| Field | Required | Type |
-|:---|:---:|:---|
-| `categoryDescriptor` | ✓ | string — plain statement of what the brand makes or does |
-| `functionalClaims` | — | string[] |
-| `specifications` | — | string[] |
-| `forbiddenClaims` | — | string[] |
-
-**connotative** *(meaningClusters, emotionalRegister required)*
-
-| Field | Required | Type |
-|:---|:---:|:---|
-| `meaningClusters` | ✓ | string[] (min 1) — semantic territories the brand owns |
-| `emotionalRegister` | ✓ | string — how the brand makes people feel |
-| `forbiddenMeanings` | — | string[] |
-| `minimumConnotativeTest` | — | string — one-sentence test for connotative fit |
-
-**layerHierarchy** *(required)*: `"connotative_first" | "balanced" | "denotative_first"`
-
-### narrative.myth *(mythStatement, mythTest required)*
-
-| Field | Required | Type |
-|:---|:---:|:---|
-| `mythStatement` | ✓ | string — the belief that defines the brand's worldview |
-| `mythTest` | ✓ | string — yes/no test for content |
-| `culturalTension` | — | string |
-| `protagonistRole` | — | string |
-| `antagonist` | — | string |
-| `constraints` | — | `{ constraint, severity, rationale?, example? }[]` |
-
-### narrative.contentTest *(all three required)*
-
-| Field | Required | Type |
-|:---|:---:|:---|
-| `mythTest` | ✓ | string |
-| `connotativeTest` | ✓ | string |
-| `toneTest` | ✓ | string |
-
-`mythEvolution`, `pillars`, `editorial` — see `brand-schema-spec/layers/narrative.md`.
+More: [`layers/rules.md`](https://github.com/ramoira/brand-schema-spec/blob/main/layers/rules.md).
 
 ---
 
-## voice
+## `identity`
 
-### voice.base *(all four required)*
+| Field | Summary |
+|:---|:---:|
+| `prism.physique.{permitted, posture, referenceURL}` | ✓ |
+| `prism.personality.characterBrief` | ✓ |
+| `prism.culture.{coreValues, originNarrative}` | ✓ |
+| `prism.culture.sacredBoundary` | *opt-in* |
+| `prism.relationship.{formality, warmth}` (0–10, shared scales) | ✓ |
+| `prism.reflection.{depictedCustomer, ageSignal}` | ✓ |
+| `prism.selfImage.{feelingDescriptors, identityStatement}` | ✓ |
+| `distinctiveAssets.visual` (colours, logo clear space, iconography, photography) | ✓ |
+| `distinctiveAssets.sonic` (sonic logo, genres, mood) | ✓ |
+| `distinctiveAssets.linguistic.{ownedPhrases, ownedWords, typographicVoice}` | ✓ |
 
-| Field | Required | Type |
-|:---|:---:|:---|
-| `sentenceLength` | ✓ | SentenceLength |
-| `vocabularyLevel` | ✓ | Score |
-| `humourPermitted` | ✓ | boolean |
-| `humourStyle` | ✓ | HumourStyle |
-| `permittedDevices` | — | string[] |
-| `forbiddenDevices` | — | string[] |
-| `structuralRules` | — | string[] — prose-level constraints; prevents voice drift |
+## `narrative`
 
-### voice.approvedTones *(min 1, required)*
+| Field | Summary |
+|:---|:---:|
+| `semiotic.denotative.categoryDescriptor` (required), `specifications` | ✓ |
+| `semiotic.denotative.claims[]` `{claim_id, claim, evidenceRequired, evidenceType, markets, surfaces}`: the one list of approved claims | ✓ |
+| `semiotic.connotative.{meaningClusters, emotionalRegister}` (required) | ✓ |
+| `myth.{mythStatement (required), culturalTension, protagonistRole, antagonist}` | ✓ |
+| `mythEvolution.{principle, immutableCore, modernTensions}` | ✓ |
+| `pillars[]` `{name, description, coreClaim, approvedArcs, surfaces, rails}` | ✓ |
+| `editorial.{openingPrinciple, structuralApproach, referencePool, timeScaleLanguage}` | ✓ |
+| `guidance[]` `{question, applies_to}`: questions without brand-judged examples yet; never a verdict | ✓ |
 
-Strings, optionally with em-dash explanation: `"warm and informed — the brilliant friend who researched this"`.
+## `voice`
 
-### voice.forbiddenTones *(min 1, required)*
+| Field | Summary |
+|:---|:---:|
+| `base.vocabularyLevel` (0–10, required), `base.humourStyle` `{style, frequency}` (required), `base.permittedDevices` | ✓ |
+| `approvedTones` (at least one) | ✓ |
+| `examples[]` `{example_id, surface, text, verdict: approved \| rejected, reason, judged_by, source, captured_at}` | ✓ |
+| `contextVariants[]` `{surface, formalityDelta, warmthDelta, sentenceLength, openingInstruction, closingInstruction, rails, fallbackInstruction}` | ✓ |
+| `rails.{global, alternatives}`: rails `{rail_id, context, instruction, example, antiExample}` | ✓ |
 
-Same format.
+`judged_by` records who judged an example: `brand_owner`, `brand_team`, `agency`, `freelancer`, `ramoira_facilitator`, `archetype_template` or `ramoira_draft`. Only `brand_owner` and `brand_team` examples can ground a judged rule in a ratified schema.
 
-### voice.examples *(min 2, required)*
+## `commercial` (*opt-in*)
 
-Summary requires min 4 total with min 2 approved + min 2 rejected.
+`pricing.{style, displayFormat, surfaceOverrides, permittedLanguage}`, `claims.superlatives.approved`, `offers.{permittedTypes, communicationRules}`, `socialProof.{celebrityEndorsementStyle, permittedAuthoritySignals}`. Discount caps, urgency and forbidden pricing language are rules, not fields.
 
-| Field | Required | Type |
-|:---|:---:|:---|
-| `text` | ✓ | string |
-| `verdict` | ✓ | `"approved" | "rejected"` |
-| `reason` | ✓ | string |
-| `context` | — | string — surface or scenario |
+## `governance` (*opt-in*)
 
-Rejected examples carry the contrast signal. They are the most important examples for preventing LLM voice drift.
-
-### voice.contextVariants
-
-| Field | Required | Type |
-|:---|:---:|:---|
-| `surface` | ✓ | OutputSurface |
-| `formalityDelta` | — | number |
-| `warmthDelta` | — | number |
-| `sentenceLength` | — | SentenceLength override |
-| `openingInstruction` | — | string |
-| `closingInstruction` | — | string |
-| `rails` | — | Rail[] |
-| `additionalForbidden` | — | string[] |
-
-### voice.rails
-
-| Field | Required | Type |
-|:---|:---:|:---|
-| `global` | ✓ | Rail[] (min 1) |
-| `alternatives` | — | per-restriction rail sets |
+`conflictResolution`, `situations[]` (a crisis, an accusation, a competitor's claim: activated by the brand, never declared by a producer), `surfaces[]` `{surface, objective, primaryRail, rails, fallback, intentRules, suspended_rule_ids}`, `override` (who may clear a `strong` finding, and how), `reviewTopics`.
 
 ---
 
-## commercial
+## Shared scales
 
-### commercial.pricing *(style, priceDisplayPermitted, discountPermitted required)*
+`formality`, `warmth` and `vocabularyLevel` are integers from 0 to 10 on anchored scales defined once in the spec (§8.6), so a value means the same thing in every schema. Context-variant and situation deltas move along them and must stay within 0–10.
 
-| Field | Required | Type |
-|:---|:---:|:---|
-| `style` | ✓ | PricingStyle |
-| `priceDisplayPermitted` | ✓ | boolean |
-| `discountPermitted` | ✓ | boolean |
-| `urgencyLanguagePermitted` | — | boolean |
-| `scarcityLanguagePermitted` | — | boolean |
-| `maxDiscountPercent` | — | number 0–100 |
-| `forbiddenLanguage` | — | ConstrainedString[] |
+## Enumerations
 
-### commercial.claims *(required)*
+`OutputSurface` (17 values) and `UserIntent` (8 values): [SPEC.md, Appendix A](https://github.com/ramoira/brand-schema-spec/blob/main/SPEC.md#appendix-a--enumerations).
 
-| Field | Type |
-|:---|:---|
-| `approved` | `{ claim, evidenceRequired?, surfaces? }[]` |
-| `forbidden` | ConstrainedString[] |
-| `comparative` | `{ competitorMentionPermitted, comparativeClaimsPermitted, ... }` |
-| `superlatives` | `{ permitted, approved[], forbidden[] }` |
+## From 2.0.0
 
-`offers`, `socialProof`, `surfaceRules`, `globalForbiddenTerms` — see `brand-schema-spec/layers/commercial.md`.
-
----
-
-## governance
-
-### governance.severity *(required)*
-
-**absolute** *(constraints min 1, violationResponse required)*
-
-| Field | Required | Type |
-|:---|:---:|:---|
-| `constraints` | ✓ | string[] (min 1) |
-| `violationResponse` | ✓ | `"block_output" | "flag_and_block"` |
-
-**strong** *(required)*
-
-| Field | Required | Type |
-|:---|:---:|:---|
-| `constraints` | ✓ | string[] |
-| `violationResponse` | ✓ | `"flag_for_review" | "block_output"` |
-| `overrideProcess` | — | string |
-
-**contextual** *(required)*
-
-| Field | Required | Type |
-|:---|:---:|:---|
-| `constraints` | ✓ | string[] |
-| `judgmentBounds` | — | string |
-| `violationResponse` | — | `"log_for_audit"` |
-
-### governance.preflight *(all three required)*
-
-Three brand-specific yes/no questions to run on any generated content before publishing.
-
-| Field | Required | Type |
-|:---|:---:|:---|
-| `question1` | ✓ | string |
-| `question2` | ✓ | string |
-| `question3` | ✓ | string |
-
-`conflictResolution`, `surfaceRules` (with `intentRules` per UserIntent), `overrideProtocol`, `compliance` (with `geographicOverrides`) — see `brand-schema-spec/layers/governance.md`.
+`meta` became `ramoira`; `_component` and `_version` are gone; every forbidden list (`neverDo`, forbidden tones and words, zero-tolerance terms, severity strings) became rules; `certified` and `confidence` were removed. Field by field: [migration guide](https://github.com/ramoira/brand-schema-spec/blob/main/migrations/2.0.0-to-3.0.0.md).
