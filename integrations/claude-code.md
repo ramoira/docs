@@ -1,73 +1,61 @@
 # Using Ramoira with Claude Code
 
-Claude Code reads `CLAUDE.md` at the start of every session. Add a schema loading instruction there and Claude Code will apply your brand schema automatically — no re-prompting between sessions.
+Claude Code reads `CLAUDE.md` at the start of every session. Point it at your brand brief there, and it works from your schema without re-briefing.
 
-> **A generated schema is a candidate.** What `ramoira init` produces is a draft until the brand reviews and ratifies it. Content your tools produce with it is not "certified" or "approved" by having used it.
+> **A drafted schema is a candidate.** What your agent drafts is a candidate until the brand reviews and [ratifies](../concepts/ratification.md) it. Content your tools write with it is not "certified" or "approved" by having used it.
 
 ---
 
 ## Setup
 
-**1. Generate a schema**
+**1. Draft a schema**
 
 ```sh
 npx ramoira init
 ```
 
-This creates `brand.schema.json` in your current directory.
+Then ask your coding agent: *"Read ramoira/DRAFTING.md and draft our brand schema."* It writes `ramoira/brand.schema.json`. See [your first schema](../guides/first-schema.md).
 
-**2. Add a loading instruction to CLAUDE.md**
+**2. Point `CLAUDE.md` at the schema**
 
-Create or edit `CLAUDE.md` in your project root:
+`init` already adds a brand schema section to `CLAUDE.md` when the file exists, and always to `AGENTS.md`. If your project has no `CLAUDE.md`, create one with the line `@AGENTS.md`, or add this yourself:
 
 ```markdown
 ## Brand context
 
-This project uses a Ramoira brand schema. Before generating any copy, marketing content,
-or user-facing text, read `brand.schema.json` and apply it.
-
-Priority fields:
-- `identity.summary.neverDo` — absolute constraints, always apply
-- `voice.approvedTones` and `voice.forbiddenTones`
-- `voice.examples` — study the rejected examples; they define what this brand never sounds like
-- `voice.base.structuralRules` — sentence-level constraints
-- `governance.preflight` — run these three questions on any output before returning it
+Before writing any copy or user-facing text, run `npx ramoira status` (if it says the file is behind,
+`npx ramoira pull`), then read `ramoira/brand.schema.json`. Follow its rules exactly: absolute rules are never broken.
+Make only the product claims it lists. Match its voice and its judged examples.
+After drafting, run `npx ramoira check --surface <surface> <file>` and fix what it flags.
 ```
-
-**3. (Optional) Publish for remote access**
-
-If you work across machines or want remote agents to access your schema:
-
-```sh
-export RAMOIRA_TOKEN=your_token
-npx ramoira publish
-```
-
-Published summary URL: `https://ramoira.com/brands/[slug]/schema.summary.json`
 
 ---
 
-## How agents should load the schema
+## What to load, in order
 
-For most tasks, load `brand.schema.json` directly from the project directory.
+1. The **rules** for the surface (`surfaces` is `"all"` or includes it). `absolute` rules are never broken; `strong` ones need the brand's sign-off.
+2. **`voice.examples`**: the brand's approved and rejected lines, with reasons. The rejected ones show what it never sounds like.
+3. **`voice.approvedTones`** and `voice.base` (vocabulary, humour).
+4. **`voice.contextVariants`** for the surface, and the **rails**.
+5. **`narrative.semiotic.denotative.claims`**: the only product claims the brand makes.
 
-For surface-specific generation, focus on the fields relevant to that surface:
+The schema holds everything: rules (private ones too), claims, tones, the examples the brand judged, context variants and rails. Tools without project files can use the public summary instead (below), which leaves out private rules and, unless the brand opted in, the commercial and governance layers.
 
-| Surface | Key fields to load |
-|:---|:---|
-| `social_organic` | `identity.summary`, `voice.approvedTones`, `voice.forbiddenTones`, `voice.examples` |
-| `email_acquisition` | above + `commercial.pricing` (check discount/urgency permissions) |
-| `product_detail_page` | above + `voice.base.structuralRules`, `commercial.claims` |
-| `paid_landing_page` | above + `commercial.claims.forbidden`, `governance.severity.absolute` |
+## Checking a draft
 
-Always run `governance.preflight` questions on output before returning it.
+```sh
+npx ramoira check --surface product_detail_page draft.txt
+```
+
+`check` runs the schema's rules over the draft and names each rule it breaks, quoting the span. It does not suggest rewrites; revising is yours. It is a self-check, not an independent check.
 
 ---
 
-## Validating a schema
+## Remote access (optional)
 
 ```sh
-npx ramoira validate
+npx ramoira login
+npx ramoira push --slug your-brand
 ```
 
-Exits 0 on success, 1 on failure with error list. CI-friendly — no network call required.
+Review it on your dashboard and press **Make public**. The public summary is then at `https://ramoira.com/brands/<slug>/schema.summary.json`. It holds the public rules and the identity, narrative and voice layers; private rules and the commercial and governance layers stay out unless the brand opted them in.

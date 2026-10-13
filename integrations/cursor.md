@@ -1,70 +1,59 @@
 # Using Ramoira with Cursor
 
-Cursor reads files in your project directory. Add `brand.schema.json` to your project and reference it in your system prompt or rules file — Cursor will apply your brand schema automatically.
+Cursor reads project files and rules. Add a rule that points at your brand brief, and Cursor applies your schema without re-briefing.
 
-> **A generated schema is a candidate.** What `ramoira init` produces is a draft until the brand reviews and ratifies it. Content your tools produce with it is not "certified" or "approved" by having used it.
+> **A drafted schema is a candidate.** What your agent drafts is a candidate until the brand reviews and [ratifies](../concepts/ratification.md) it. Content your tools write with it is not "certified" or "approved" by having used it.
 
 ---
 
 ## Setup
 
-**1. Generate a schema**
+**1. Draft a schema**
 
 ```sh
 npx ramoira init
 ```
 
-This creates `brand.schema.json` in your current directory.
+Then ask your coding agent: *"Read ramoira/DRAFTING.md and draft our brand schema."* It writes `ramoira/brand.schema.json`. See [your first schema](../guides/first-schema.md).
 
-**2. Add a brand rule to `.cursorrules`**
+**2. Add a project rule** (`.cursor/rules/brand.mdc`, or `.cursorrules`)
 
-Create or edit `.cursorrules` in your project root:
+`init` adds a brand schema section to `AGENTS.md`. If your editor doesn't read that file, or you want the rule explicit, add:
 
 ```
-## Brand context
-
-This project uses a Ramoira brand schema at brand.schema.json.
-
-Before generating any copy, marketing content, or user-facing text:
-1. Read brand.schema.json
-2. Apply identity.summary.neverDo as absolute constraints
-3. Match voice.approvedTones; avoid voice.forbiddenTones
-4. Study voice.examples — especially the rejected ones
-5. Apply voice.base.structuralRules to every sentence
-6. Check output against governance.preflight before returning
+Before writing any copy or user-facing text, read ramoira/brand.schema.json.
+- Follow its rules exactly; absolute rules are never broken.
+- Make only the product claims it lists.
+- Match its approved tones and the examples the brand judged; avoid what the rejected examples show.
 ```
 
-**3. (Optional) Publish for remote access**
+---
+
+## What to load, in order
+
+1. The **rules** for the surface (`surfaces` is `"all"` or includes it). `absolute` rules are never broken; `strong` ones need the brand's sign-off.
+2. **`voice.examples`**: the brand's approved and rejected lines, with reasons. The rejected ones show what it never sounds like.
+3. **`voice.approvedTones`** and `voice.base` (vocabulary, humour).
+4. **`voice.contextVariants`** for the surface, and the **rails**.
+5. **`narrative.semiotic.denotative.claims`**: the only product claims the brand makes.
+
+The schema holds everything: rules (private ones too), claims, tones, the examples the brand judged, context variants and rails. Tools without project files can use the public summary instead (below), which leaves out private rules and, unless the brand opted in, the commercial and governance layers.
+
+## Checking a draft
 
 ```sh
-export RAMOIRA_TOKEN=your_token
-npx ramoira publish
+npx ramoira check --surface product_detail_page draft.txt
 ```
 
-Published summary URL: `https://ramoira.com/brands/[slug]/schema.summary.json`
+`check` runs the schema's rules over the draft and names each rule it breaks, quoting the span. It does not suggest rewrites; revising is yours. It is a self-check, not an independent check.
 
 ---
 
-## How agents should load the schema
+## Remote access (optional)
 
-For most tasks, Cursor reads `brand.schema.json` directly from the project.
-
-Priority fields for generation:
-
-1. `identity.summary` — one-line brief, three adjectives, never-do list
-2. `voice.approvedTones` and `voice.forbiddenTones`
-3. `voice.examples` — the rejected examples define what this brand will never sound like
-4. `voice.base.structuralRules` — prose-level constraints
-5. `governance.severity.absolute.constraints` — hard stops
-
----
-
-## Remote schema access
-
-For agents outside your project directory, the published summary is publicly accessible:
-
-```
-https://ramoira.com/brands/[slug]/schema.summary.json
+```sh
+npx ramoira login
+npx ramoira push --slug your-brand
 ```
 
-This URL can be added to any agent context that accepts external URLs.
+Review it on your dashboard and press **Make public**. The public summary is then at `https://ramoira.com/brands/<slug>/schema.summary.json`. It holds the public rules and the identity, narrative and voice layers; private rules and the commercial and governance layers stay out unless the brand opted them in.

@@ -1,16 +1,17 @@
 # Brand-aware copy
 
-A brand-aware copy workflow is:
+A workflow for an agent or a team writing for a brand:
 
-1. Resolve surface + intent.
-2. Load only the schema sections that surface needs.
-3. Generate copy with positive rails.
-4. Check the result against the schema's hard rules.
-5. If the check fails, regenerate using the violations as constraints.
+1. Decide the **surface** (and, if useful, the user intent).
+2. Load what that surface needs from the schema: its rules, the examples the brand judged, approved tones, the surface's context variant and rails, and the approved claims. See [how agents consume schemas](../concepts/how-agents-consume-schemas.md).
+3. Write.
+4. Check the draft: `ramoira check --surface <surface> draft.txt`.
+5. Revise what the check flags, and check again.
 
-The check in step 4 is a self-check: useful tooling, not an independent check and not certification. A schema the brand has not ratified is a candidate.
+Step 4 is a self-check: useful tooling, not an independent check and not certification. The checker flags and cites; it never suggests the revision. A schema the brand has not ratified is a candidate.
 
 See:
 
-- `docs/concepts/how-agents-consume-schemas.md`
-- `docs/reference/schema-fields.md`
+- [How agents consume schemas](../concepts/how-agents-consume-schemas.md)
+- [Schema fields](../reference/schema-fields.md)
+- [CLI reference](../reference/cli.md)

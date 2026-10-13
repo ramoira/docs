@@ -14,7 +14,7 @@ Ratification is where that decision is recorded. It is made by someone with auth
 
 Two things are **not** ratification:
 
-- **Publishing.** `ramoira publish` puts a summary on a public URL. A published schema is still a candidate until it is ratified.
+- **Publishing.** Making a version public in the review on your dashboard puts its summary on a public URL. A published schema is still a candidate until it is ratified.
 - **Account ownership.** `account_owner_verified` means the account controls the brand's slug. It says nothing about whether the brand has ratified the schema.
 
 ---
