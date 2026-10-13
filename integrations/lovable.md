@@ -2,7 +2,7 @@
 
 Lovable generates UI and copy from prompts. Give it your brand brief as context, so its copy starts from your schema instead of the category default.
 
-> **A drafted schema is a candidate.** What `ramoira init` produces is a draft until the brand reviews and [ratifies](../concepts/ratification.md) it. Content your tools write with it is not "certified" or "approved" by having used it.
+> **A drafted schema is a candidate.** What your agent drafts is a candidate until the brand reviews and [ratifies](../concepts/ratification.md) it. Content your tools write with it is not "certified" or "approved" by having used it.
 
 ---
 
@@ -10,15 +10,17 @@ Lovable generates UI and copy from prompts. Give it your brand brief as context,
 
 **1. Draft a schema**
 
+With a coding agent in your project:
+
 ```sh
 npx ramoira init
 ```
 
-This writes `ramoira/brand.schema.json` and `ramoira/agents.md`, a plain-language brief for AI tools.
+Then ask the agent: *"Read ramoira/DRAFTING.md and draft our brand schema."* It writes `ramoira/brand.schema.json`. Without a coding agent, draft in your browser at [ramoira.com/draft](https://ramoira.com/draft). Then review it on your dashboard and press **Make public**, so its summary has a URL to give Lovable. See [your first schema](../guides/first-schema.md).
 
 **2. Attach the brief**
 
-Attach `ramoira/agents.md` to your Lovable session, or give it the published summary URL (see below). Then:
+Give Lovable your public summary URL (see below), or attach `ramoira/brand.schema.json` to the session. Then:
 
 ```
 Apply the attached brand brief. Follow its rules exactly; make only the product claims it lists;
@@ -35,13 +37,13 @@ match its approved tones and the examples the brand judged.
 4. **`voice.contextVariants`** for the surface, and the **rails**.
 5. **`narrative.semiotic.denotative.claims`**: the only product claims the brand makes.
 
-`ramoira/agents.md` covers the public rules, claims, tones, the examples the brand judged and per-surface notes, taken from the public summary. Read the schema itself for rails and private rules.
+The schema holds everything: rules (private ones too), claims, tones, the examples the brand judged, context variants and rails. Tools without project files can use the public summary instead (below), which leaves out private rules and, unless the brand opted in, the commercial and governance layers.
 
 ## Which context for which task
 
 | Task | Attach | Why |
 |:---|:---|:---|
-| UI copy, labels, social | `ramoira/agents.md` or the summary | Rules, tones, examples |
+| UI copy, labels, social | The public summary URL | Rules, tones, examples |
 | Landing pages, pricing, claims | `ramoira/brand.schema.json` | Adds private rules and the commercial layer, if the brand keeps them private |
 
 ## Checking a draft
@@ -58,7 +60,7 @@ npx ramoira check --surface product_detail_page draft.txt
 
 ```sh
 npx ramoira login
-npx ramoira publish
+npx ramoira push --slug your-brand
 ```
 
-The public summary is then at `https://ramoira.com/brands/<slug>/schema.summary.json`. It holds the public rules and the identity, narrative and voice layers; private rules and the commercial and governance layers stay out unless the brand opted them in.
+Review it on your dashboard and press **Make public**. The public summary is then at `https://ramoira.com/brands/<slug>/schema.summary.json`. It holds the public rules and the identity, narrative and voice layers; private rules and the commercial and governance layers stay out unless the brand opted them in.

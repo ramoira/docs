@@ -1,6 +1,6 @@
 # Ramoira Documentation
 
-Ramoira publishes an open schema format (spec 3.0.0) for what a brand means, so agents and people can write and check against it.
+Ramoira publishes an open schema format (spec 3.1.0) for what a brand means, so agents and people can write and check against it.
 
 ## Key documents
 

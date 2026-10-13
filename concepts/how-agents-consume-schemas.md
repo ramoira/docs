@@ -17,7 +17,7 @@ Where will the content appear? The surface (`OutputSurface`, 17 values: `product
 
 From the public summary, private rules and the commercial and governance layers are absent unless the brand opted them in. Work from what is there; do not invent the rest.
 
-A shorter route: `ramoira init` writes `ramoira/agents.md`, a plain-language brief built from the public summary, for tools that read Markdown better than JSON.
+`ramoira init` also adds a short brand schema section to `AGENTS.md` (and `CLAUDE.md` or Copilot's instructions, where present), so coding agents find the schema without being told. After a browser draft (`init --anchored`), `ramoira/agents.md` is a plain-language brief built from the public summary, for tools that read Markdown better than JSON.
 
 ## 3. Check your own output
 

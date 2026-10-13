@@ -1,51 +1,71 @@
 # Your first schema
 
-From nothing to a published candidate. Everything here is free; only the last step needs an account.
+From nothing to a public candidate, with your own coding agent. Drafting needs no account and no model key of yours; only uploading for review needs a free account.
 
-## 1. Draft it
+## 1. Set up the project
+
+In your project (any folder your coding agent works in):
 
 ```bash
-export ANTHROPIC_API_KEY=sk-ant-…     # your own key: init drafts with your model
 npx ramoira init
 ```
 
-`init` asks who is answering and about the brand: what it makes, what it believes, its tones, the words it never uses, its claims, competitors and the surfaces it writes for. Your model drafts the rest into a fixed shape, and the CLI builds a complete five-layer 3.0.0 schema:
+`init` installs:
 
-- `ramoira/brand.schema.json`: the schema;
-- `ramoira/agents.md`: a plain-language brief for your AI tools.
+- `ramoira/DRAFTING.md`: the drafting protocol your agent follows;
+- `ramoira/spec/`: a local copy of the spec, so an agent without web access has the format;
+- `ramoira/README.md`: a page for you, from draft to public and on to the next version;
+- a short brand schema section in `AGENTS.md` (and in `CLAUDE.md` or `.github/copilot-instructions.md` where you have them), pointing your agents at the schema.
 
-Along the way it shows you a few sample lines for each rule that needs judgment, and you mark each one "that's us" or "not us". Only lines you judged become examples in your schema. Rules the model proposed are marked as not yet affirmed by you.
+It works with Claude Code, Codex, GitHub Copilot in VS Code, Cursor, Windsurf and JetBrains agents: anything that reads project instructions. No coding agent? Draft in your browser instead: `npx ramoira init --anchored`, or [ramoira.com/draft](https://ramoira.com/draft).
 
-The result is a **candidate**: your draft of what the brand means, until the brand [ratifies](../concepts/ratification.md) it.
+## 2. Draft it with your agent
 
-## 2. Review and edit
+Ask your agent:
 
-Open `ramoira/brand.schema.json`. Affirm, edit or delete each proposed rule (`"affirmed": false`), and fill anything left empty. Then:
+> Read ramoira/DRAFTING.md and draft our brand schema.
+
+It reads your project and anything you give it (your site, a pitch deck, notes), asks only what it can't find, and writes `ramoira/brand.schema.json` with all five layers. It never invents facts and never writes marketing copy into the schema. Every rule it proposes is marked `"affirmed": false`, and every field it proposed is marked as proposed: only you, in the review, can affirm them.
+
+The agent finishes by fingerprinting and validating the file:
 
 ```bash
+npx ramoira hash --write
 npx ramoira validate
 ```
 
-## 3. See it
+Run `hash --write` after every edit: `validate` refuses a file whose `content_hash` no longer matches it, and says so.
+
+The result is a **candidate**: your draft of what the brand means, until the brand [ratifies](../concepts/ratification.md) it.
+
+## 3. Upload it for your review
 
 ```bash
-npx ramoira book            # an HTML brand book, no model needed
-npx ramoira book --probe    # judge more sample lines first; the ones you mark become examples
+npx ramoira login                     # free; your browser opens to sign in with GitHub or an emailed link
+npx ramoira push --slug your-brand    # the slug only the first time
 ```
 
-## 4. Use it
+Nothing becomes public. The push is a private version waiting for you on your dashboard. See [review and publishing](publishing.md).
 
-Point your AI tools at `ramoira/agents.md` or the schema: see [Claude Code](../integrations/claude-code.md), [Cursor](../integrations/cursor.md), [Windsurf](../integrations/windsurf.md). Check drafts against your rules:
+## 4. Review it and make it public
+
+On [ramoira.com/dashboard](https://ramoira.com/dashboard), signed in: affirm, edit or delete each rule; keep or rewrite each proposed field; then **Make public**, or **Send back to your agent** with what to change. Then, in your project:
+
+```bash
+npx ramoira pull
+```
+
+## 5. Use it
+
+Your agents find the schema through the section `init` added to `AGENTS.md`. For other tools, see [Claude Code](../integrations/claude-code.md), [Cursor](../integrations/cursor.md), [Windsurf](../integrations/windsurf.md), [Lovable](../integrations/lovable.md) and [v0](../integrations/v0.md). Check drafts against your rules:
 
 ```bash
 npx ramoira check --surface social_organic post.txt
 ```
 
-## 5. Publish
+And see it as a brand book:
 
 ```bash
-npx ramoira login
-npx ramoira publish
+npx ramoira book            # an HTML brand book, no model needed
+npx ramoira book --probe    # judge sample lines first (your own Anthropic key); the ones you mark become examples
 ```
-
-See [publishing](publishing.md).

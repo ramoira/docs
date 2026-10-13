@@ -2,7 +2,7 @@
 
 A **brand schema** is a structured, machine-readable statement of what a brand means: its rules, and the facts and voice behind them. Producers (agencies, freelancers, in-house teams, AI tools) read it to make content that fits the brand. Checkers read its rules to test content against it.
 
-The format is open: [brand-schema-spec](https://github.com/ramoira/brand-schema-spec), version 3.0.0. That spec is normative; this page explains it.
+The format is open: [brand-schema-spec](https://github.com/ramoira/brand-schema-spec), version 3.1.0 (3.0.0 documents stay valid). That spec is normative; this page explains it.
 
 ---
 
@@ -81,7 +81,7 @@ A schema says what the brand means. It never carries results about itself: no ce
 
 | | Full (`ramoira/brand.schema.json`) | Summary (`schema.summary.json`) |
 |:---|:---|:---|
-| **Where** | Your project; sent privately to Ramoira when you publish | Public at `ramoira.com/brands/<slug>/schema.summary.json` |
+| **Where** | Your project; sent privately to Ramoira when you push it for review | Public at `ramoira.com/brands/<slug>/schema.summary.json` |
 | **Rules** | All | Public rules only |
 | **Layers** | All five | `identity`, `narrative` and `voice` in full; `commercial` and `governance` only if you opt them in |
 | **Who reads it** | Your own tools and producers you share it with | Anyone: remote agents, crawlers, collaborators |

@@ -1,4 +1,4 @@
-# Schema fields — 3.0.0
+# Schema fields — 3.x
 
 A field-by-field guide to the brand schema. The normative definitions are the spec's [`SPEC.md`](https://github.com/ramoira/brand-schema-spec/blob/main/SPEC.md) and its JSON Schemas; where this page and the spec differ, the spec wins. Every object is closed: a field not listed in the spec fails validation.
 
@@ -17,7 +17,7 @@ A field-by-field guide to the brand schema. The normative definitions are the sp
 | `voice` | ✓ | ✓ | How it speaks |
 | `commercial` | ✓ | *opt-in* | Pricing, offers, social proof |
 | `governance` | ✓ | *opt-in* | How rules interact, surfaces, situations, overrides |
-| `draft_provenance` | | — | How the candidate was drafted (method, participants, reactions, which fields are unfilled) |
+| `draft_provenance` | | — | How the candidate was drafted (method, participants, reactions, and each field's status: `inherited` proposed, `authored` in the person's words, `affirmed` kept by the owner in a review, `unfilled`). Outside `content_hash` |
 
 ---
 
@@ -25,14 +25,14 @@ A field-by-field guide to the brand schema. The normative definitions are the sp
 
 | Field | Values |
 |:---|:---|
-| `spec_version` | `"3.0.0"` |
+| `spec_version` | `"3.1.0"` (current) or `"3.0.0"`. 3.1.0 only adds optional `draft_provenance` fields for drafting from reference brands, outside `content_hash`; a 3.0.0 document stays valid |
 | `schema_type` | `full`, `summary` or `archetype` |
 | `brand_id` | The brand's slug: lowercase letters, digits and hyphens |
 | `schema_version` | A human label. The real version is `content_hash`. |
 | `content_hash` | `sha256:` + the hash of the rules and five layers (RFC 8785 canonical JSON). Any change to meaning changes it. |
-| `workflow_state` | `draft`, `in_review`, `published`, `archived` |
+| `workflow_state` | `draft`, `in_review`, `published`, `archived`. The publication lifecycle only, never ratification. `push` sets `in_review`; the review sets `published` or (sent back) `draft`. Ramoira serves its own value |
 | `ratification` | `null` (a candidate), or a pointer `{ratification_id, ratified_hash, ratified_at, ratifier_role}` set by Ramoira's record |
-| `account_owner_verified` | The account has proven control of the brand's domain. Not ratification. |
+| `account_owner_verified` | The account has proven control of the brand's domain (only matters for who keeps a slug; domain verification is not available yet, so it is `false`). Not ratification. Ramoira serves its own value |
 | `canonical_url` | Where the published summary lives |
 | `summary_opt_in` | Any of `commercial`, `governance`, `sacred_boundary` |
 

@@ -1,6 +1,6 @@
 # API reference
 
-Public reads need no authentication. Publishing and account calls need an API token (`ramoira login` saves one) or a signed-in browser session. The examples use `corvane`, a fictional brand.
+Public reads need no authentication. Pushing, pulling and account calls need an API token (`ramoira login` saves one) or a signed-in browser session. Making a version public is not an API call: only the signed-in owner does it, in the review on ramoira.com. The examples use `corvane`, a fictional brand.
 
 ---
 
@@ -10,12 +10,12 @@ Free, crawlable and readable from any origin (`Access-Control-Allow-Origin: *`).
 
 ### GET /brands/{slug}/schema.summary.json
 
-The brand's public summary: a [`SPEC.summary.schema.json`](https://github.com/ramoira/brand-schema-spec/blob/main/SPEC.summary.schema.json) 3.0.0 document.
+The brand's public summary: a [`SPEC.summary.schema.json`](https://github.com/ramoira/brand-schema-spec/blob/main/SPEC.summary.schema.json) 3.x document.
 
 ```json
 {
   "ramoira": {
-    "spec_version": "3.0.0",
+    "spec_version": "3.1.0",
     "schema_type": "summary",
     "brand_id": "corvane",
     "schema_version": "1.0.0",
@@ -33,7 +33,7 @@ The brand's public summary: a [`SPEC.summary.schema.json`](https://github.com/ra
 }
 ```
 
-Ramoira sets the `ramoira` block it serves. `content_hash` is the hash of the full schema the summary was extracted from. `ratification` is `null` while the schema is a candidate.
+Ramoira sets the `ramoira` block it serves from its own records, whatever the file says (for example `workflow_state` and `account_owner_verified`). `content_hash` is the hash of the full schema the summary was extracted from. `ratification` is `null` while the schema is a candidate.
 
 ### GET /brands/{slug}/status
 
@@ -74,49 +74,70 @@ Both reads are also served under `/api/brands/{slug}/…`.
 
 ---
 
-## Publishing
+## Push and pull
 
-### POST /api/brands/{slug}/publish
+### POST /api/brands/{slug}/proposals
 
-Called by `ramoira publish`. Free.
+Called by `ramoira push`; also what a dashboard upload and a finished browser draft go through. Free. Stores a **private** proposed version for the owner's review. Nothing becomes public.
 
 ```
-POST https://ramoira.com/api/brands/corvane/publish
+POST https://ramoira.com/api/brands/corvane/proposals
 Authorization: Bearer <token>
 Content-Type: application/json
 
-{ "schema": { …the full 3.0.0 brand.schema.json… } }
+{ "schema": { …the full 3.x brand.schema.json… }, "base_hash": "sha256:…" }
 ```
 
-The schema must be a valid 3.0.0 full schema, its `ramoira.brand_id` must equal the slug, and `ramoira.ratification` must be `null` (a ratification is recorded by Ramoira, not carried in a file). Publishing to a slug no one holds claims it for your account. Ramoira keeps the full schema privately, bound to its `content_hash`, and serves the summary.
+- `schema` must be a valid 3.x full schema with an up-to-date `content_hash`, `ramoira.brand_id` equal to the slug, and `ramoira.ratification` null (a ratification is recorded by Ramoira, not carried in a file).
+- `base_hash` is the `content_hash` of the last version the owner reviewed, as pulled; `null` for a brand's first push.
+- Rules marked `"affirmed": true`, examples judged by the brand, and fields marked `affirmed` are accepted only if the reviewed base holds exactly the same ones: only the owner affirms, signed in.
+- Pushing to a slug no one holds claims it for your account. A newer push replaces a proposal still waiting for review.
 
 **Response**
 
 ```json
 {
-  "versionId": "ver_…",
-  "workflowState": "published",
-  "canonicalUrl": "https://ramoira.com/brands/corvane/schema.summary.json",
-  "contentHash": "sha256:eaed480d…",
-  "schemaVersion": "1.0.0",
+  "proposal_id": "prp_…",
+  "content_hash": "sha256:eaed480d…",
+  "review_url": "https://ramoira.com/dashboard/corvane/review",
   "unchanged": false,
   "claimed": true
 }
 ```
 
-`201` when a new version is published; `200` with `unchanged: true` when this exact `content_hash` is already current.
+`201` for a new proposal; `200` with `unchanged: true` when this exact `content_hash` is already waiting.
 
 **Errors**
 
 | Status | Meaning |
 |:---|:---|
-| `400` | Not a 3.0.0 full schema (a 2.0.0 file points to the migration guide), `brand_id` does not match, or a ratification pointer is present |
+| `400` | Not a 3.x full schema (a 2.0.0 file points to the migration guide), `brand_id` does not match the slug, a ratification pointer is present, or the body is not `{schema, base_hash}` |
 | `401` | No valid token or session |
 | `403` | The slug belongs to another account |
-| `409` | The slug was renamed; the response names the current one |
+| `409` | `{"code": "stale_base", "reviewed_hash": "…"}`: the owner has reviewed a newer version than `base_hash`; pull and make the change on top of it. Or the slug was renamed; the response names the current one |
 | `413` | The schema is over 1 MB |
-| `422` | The schema is not valid 3.0.0; `issues` lists why |
+| `422` | The schema is not valid 3.x (`issues` lists why), or `{"code": "unearned_affirmation", "rules": […], "examples": […], "fields": […]}` names the affirmations the owner never made |
 | `429` | The account already holds the maximum number of brands |
+
+### GET /api/brands/{slug}/reviewed
+
+Called by `ramoira pull`. The owner's account only, since it carries the full schema.
+
+```json
+{
+  "content_hash": "sha256:…",
+  "schema": { …the reviewed full schema… },
+  "state": "public",
+  "reviewed_at": "2026-10-13T10:21:00Z",
+  "brief": null
+}
+```
+
+`state` is `public` when the owner made it public, `reviewed` when they sent it back. `brief` holds the owner's own requests and decisions when they sent it back (`{"requests": [{"path", "text"}], "decisions": [{"kind", "rule_id", "path", "note"}]}`), never suggestions of Ramoira's. `404` when nothing has been reviewed yet.
+
+### POST /api/brands/{slug}/publish
+
+Retired: answers `410`. Publishing is the owner's act in the review, because an agent holds every credential the CLI does.
 
 ---
 
@@ -130,5 +151,6 @@ The schema must be a valid 3.0.0 full schema, its `ramoira.brand_id` must equal 
 | `GET /api/tokens` | dashboard | Live tokens (labels and dates, never the values) |
 | `POST /api/tokens` | `ramoira create-token` | `{"label": "ci-deploy"}` → `{"token": "rmr_…"}`, shown once |
 | `DELETE /api/tokens/{id}` | dashboard | Revokes a token |
+| `DELETE /api/tokens/current` | `ramoira logout`, `ramoira login` | Revokes the token the request is made with: logout, and login retiring the computer's earlier token |
 
-Send tokens as `Authorization: Bearer rmr_…`. A token acts for the account that created it, on every brand that account holds. `RAMOIRA_TOKEN` in the environment takes precedence over the token `ramoira login` saved.
+Send tokens as `Authorization: Bearer rmr_…`. A token acts for the account that created it, on every brand that account holds: it can push and pull, never make a version public. `RAMOIRA_TOKEN` in the environment takes precedence over the token `ramoira login` saved.

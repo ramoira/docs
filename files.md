@@ -19,7 +19,7 @@ ramoira/docs/
 │
 ├── guides/
 │   ├── first-schema.md            ← ramoira init walkthrough
-│   ├── publishing.md              ← ramoira publish walkthrough
+│   ├── publishing.md              ← push, review, make public, pull
 │   ├── claude-coworking.md        ← Claude with the schema as context
 │   ├── brand-aware-copy.md        ← agent workflow using schema
 │   ├── content-pipeline.md        ← schema as dependency in a pipeline

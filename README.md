@@ -1,6 +1,6 @@
 # Ramoira Docs
 
-Documentation for using Ramoira brand schemas (spec 3.0.0) with agent tools.
+Documentation for using Ramoira brand schemas (spec 3.1.0) with agent tools.
 
 Concepts:
 

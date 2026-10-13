@@ -2,17 +2,15 @@
 
 Use your brand schema as standing context for Claude (Claude Desktop, claude.ai or Claude Code), so you write against your brand's rules without long "you are a brand copywriter" prompts.
 
-> **A drafted schema is a candidate.** What `ramoira init` produces is a draft until the brand reviews and [ratifies](../concepts/ratification.md) it. Content written with it is not "certified" or "approved" by having used it, and a check you run on your own drafts is a self-check, not an independent check.
+> **A drafted schema is a candidate.** What your agent drafts is a candidate until the brand reviews and [ratifies](../concepts/ratification.md) it. Content written with it is not "certified" or "approved" by having used it, and a check you run on your own drafts is a self-check, not an independent check.
 
 ## 1. Capture the brand
 
 ```bash
-export ANTHROPIC_API_KEY=sk-ant-…          # macOS/Linux
-# $env:ANTHROPIC_API_KEY="sk-ant-…"        # Windows PowerShell
 npx ramoira init
 ```
 
-About ten minutes of questions. You judge a few sample lines along the way; only lines you judged become examples. Result: `ramoira/brand.schema.json` and `ramoira/agents.md`.
+Then, in Claude Code, ask: *"Read ramoira/DRAFTING.md and draft our brand schema."* Claude reads your project and anything you give it, asks what it can't find, and writes `ramoira/brand.schema.json`. No model key of yours is needed for drafting. Review it on your dashboard and make it public when it says what your brand means: see [review and publishing](publishing.md). Without Claude Code, draft in your browser at [ramoira.com/draft](https://ramoira.com/draft).
 
 Then read it back as a person would:
 
@@ -20,16 +18,16 @@ Then read it back as a person would:
 npx ramoira book
 ```
 
-This writes an HTML brand book (open it in a browser). If something reads wrong, edit the schema. `npx ramoira book --probe` lets you judge more sample lines first.
+This writes an HTML brand book (open it in a browser). If something reads wrong, change it: ask Claude, or use **Revise** on your dashboard. `npx ramoira book --probe` lets you judge sample lines first (your own Anthropic key).
 
 ## 2. Give Claude the context
 
-- **Claude Desktop or claude.ai:** attach `ramoira/agents.md` (or `ramoira/brand.schema.json` for full detail) to a Project or a conversation.
-- **Claude Code:** add a line to `CLAUDE.md` pointing at `ramoira/agents.md`. See [Claude Code](../integrations/claude-code.md).
+- **Claude Desktop or claude.ai:** attach `ramoira/brand.schema.json` to a Project or a conversation, or give it your public summary URL.
+- **Claude Code:** `init` already added a brand schema section to `AGENTS.md` (and to `CLAUDE.md` if you have one). See [Claude Code](../integrations/claude-code.md).
 
 ## 3. Prompts
 
-Because Claude has the brief, the prompt only needs the task.
+Because Claude has the schema, the prompt only needs the task.
 
 **Landing page hero**
 > Using the attached brand brief, write three options for a hero headline and subheadline for [product, one line]. Follow every rule, make only the product claims the brief lists, and match the examples the brand judged.
