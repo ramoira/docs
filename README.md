@@ -33,5 +33,6 @@ Integrations:
 - `integrations/windsurf.md`
 - `integrations/lovable.md`
 - `integrations/v0.md`
+- `integrations/replit.md`
 
 The normative spec is [ramoira/brand-schema-spec](https://github.com/ramoira/brand-schema-spec); where these docs and the spec differ, the spec wins.

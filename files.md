@@ -15,7 +15,8 @@ ramoira/docs/
 │   ├── claude-code.md
 │   ├── windsurf.md
 │   ├── lovable.md
-│   └── v0.md
+│   ├── v0.md
+│   └── replit.md
 │
 ├── guides/
 │   ├── first-schema.md            ← ramoira init walkthrough

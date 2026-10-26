@@ -57,7 +57,7 @@ npx ramoira pull
 
 ## 5. Use it
 
-Your agents find the schema through the section `init` added to `AGENTS.md`. For other tools, see [Claude Code](../integrations/claude-code.md), [Cursor](../integrations/cursor.md), [Windsurf](../integrations/windsurf.md), [Lovable](../integrations/lovable.md) and [v0](../integrations/v0.md). Check drafts against your rules:
+Your agents find the schema through the section `init` added to `AGENTS.md`. For other tools, see [Claude Code](../integrations/claude-code.md), [Cursor](../integrations/cursor.md), [Windsurf](../integrations/windsurf.md), [Lovable](../integrations/lovable.md), [v0](../integrations/v0.md) and [Replit](../integrations/replit.md). Check drafts against your rules:
 
 ```bash
 npx ramoira check --surface social_organic post.txt
